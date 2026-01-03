@@ -130,13 +130,14 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
   const {cart, customerAccount} = context;
 
   return {
-    isLoggedIn: customerAccount.isLoggedIn(),
-    cart: cart.get(),
+    isLoggedIn: customerAccount?.isLoggedIn() ?? Promise.resolve(false),
+    cart: cart?.get() ?? Promise.resolve(null),
   };
 }
 
 export const meta = ({data}: MetaArgs<typeof loader>) => {
-  return getSeoMeta(data!.seo as SeoConfig);
+  if (!data?.seo) return [];
+  return getSeoMeta(data.seo as SeoConfig);
 };
 
 function Layout({children}: {children?: React.ReactNode}) {

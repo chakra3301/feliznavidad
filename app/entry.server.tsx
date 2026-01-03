@@ -11,10 +11,11 @@ export default async function handleRequest(
   remixContext: EntryContext,
   context: AppLoadContext,
 ) {
+  const env = context?.env;
   const {nonce, header, NonceProvider} = createContentSecurityPolicy({
     shop: {
-      checkoutDomain: context.env.PUBLIC_CHECKOUT_DOMAIN || context.env.PUBLIC_STORE_DOMAIN,
-      storeDomain: context.env.PUBLIC_STORE_DOMAIN,
+      checkoutDomain: env?.PUBLIC_CHECKOUT_DOMAIN || env?.PUBLIC_STORE_DOMAIN || '',
+      storeDomain: env?.PUBLIC_STORE_DOMAIN || '',
     },
     scriptSrc: [
       'self',
