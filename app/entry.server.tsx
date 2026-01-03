@@ -17,6 +17,25 @@ export default async function handleRequest(
       checkoutDomain: env?.PUBLIC_CHECKOUT_DOMAIN || env?.PUBLIC_STORE_DOMAIN || '',
       storeDomain: env?.PUBLIC_STORE_DOMAIN || '',
     },
+    styleSrc: [
+      'self',
+      'unsafe-inline',
+      'https://cdn.shopify.com',
+      'https://api.fontshare.com',
+      ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
+    ],
+    fontSrc: [
+      'self',
+      'https://cdn.shopify.com',
+      'https://api.fontshare.com',
+      'data:',
+    ],
+    connectSrc: [
+      'self',
+      'https://api.fontshare.com',
+      'https://monorail-edge.shopifysvc.com',
+      ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*', 'ws://localhost:*', 'ws://127.0.0.1:*'] : []),
+    ],
     scriptSrc: [
       'self',
       'https://cdn.shopify.com',
