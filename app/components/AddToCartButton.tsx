@@ -22,9 +22,9 @@ export function AddToCartButton({
   const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-500';
   
   const variantStyles = {
-    primary: 'bg-white text-black hover:bg-brand-400 disabled:bg-neutral-800 disabled:text-neutral-500 disabled:cursor-not-allowed',
-    secondary: 'border border-neutral-700 text-white hover:border-white hover:bg-white hover:text-black',
-    inline: 'text-brand-400 hover:text-brand-300',
+    primary: 'bg-neutral-900 text-white hover:bg-violet-600 disabled:bg-neutral-200 disabled:text-neutral-400 disabled:cursor-not-allowed',
+    secondary: 'border border-neutral-300 text-neutral-900 hover:border-violet-600 hover:text-violet-600',
+    inline: 'text-violet-600 hover:text-violet-500',
   };
   
   const widthStyles = {

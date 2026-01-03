@@ -58,16 +58,16 @@ export function Drawer({
                 leaveFrom="translate-x-0"
                 leaveTo={offScreen[openFrom]}
               >
-                <Dialog.Panel className="w-screen max-w-md text-left align-middle transition-all transform shadow-2xl h-screen-dynamic bg-neutral-950 border-l border-neutral-800">
-                  <header className="sticky top-0 flex items-center justify-between px-6 h-20 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-sm z-10">
+                <Dialog.Panel className="w-screen max-w-md text-left align-middle transition-all transform shadow-2xl h-screen-dynamic bg-white border-l border-neutral-200">
+                  <header className="sticky top-0 flex items-center justify-between px-6 h-20 border-b border-neutral-200 bg-white/95 backdrop-blur-sm z-10">
                     {heading !== null && (
-                      <Dialog.Title className="text-lg font-medium tracking-wide">
+                      <Dialog.Title className="text-lg font-medium tracking-wide text-neutral-900">
                         {heading}
                       </Dialog.Title>
                     )}
                     <button
                       type="button"
-                      className="p-2 -m-2 text-neutral-400 hover:text-white transition-colors"
+                      className="p-2 -m-2 text-neutral-500 hover:text-neutral-900 transition-colors"
                       onClick={onClose}
                       data-test="close-cart"
                       aria-label="Close panel"

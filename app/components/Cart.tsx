@@ -81,16 +81,16 @@ function CartDiscounts({
       {/* Have existing discount, display it with a remove option */}
       <dl className={codes && codes.length !== 0 ? 'grid' : 'hidden'}>
         <div className="flex items-center justify-between">
-          <dt className="text-sm text-neutral-400">Discount(s)</dt>
+          <dt className="text-sm text-neutral-500">Discount(s)</dt>
           <div className="flex items-center gap-2">
             <UpdateDiscountForm>
-              <button className="text-neutral-500 hover:text-white transition-colors">
+              <button className="text-neutral-400 hover:text-neutral-900 transition-colors">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </UpdateDiscountForm>
-            <dd className="text-sm text-brand-400">{codes?.join(', ')}</dd>
+            <dd className="text-sm text-violet-600">{codes?.join(', ')}</dd>
           </div>
         </div>
       </dl>
@@ -99,12 +99,12 @@ function CartDiscounts({
       <UpdateDiscountForm discountCodes={codes}>
         <div className="flex items-center gap-2">
           <input
-            className="flex-1 bg-neutral-900 border border-neutral-800 px-4 py-3 text-sm placeholder:text-neutral-500 focus:border-brand-500 focus:outline-none transition-colors"
+            className="flex-1 bg-neutral-100 border border-neutral-200 px-4 py-3 text-sm text-neutral-900 placeholder:text-neutral-400 focus:border-violet-500 focus:outline-none transition-colors"
             type="text"
             name="discountCode"
             placeholder="Discount code"
           />
-          <button className="px-4 py-3 text-sm tracking-wider uppercase text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-600 transition-colors">
+          <button className="px-4 py-3 text-sm tracking-wider uppercase text-neutral-600 hover:text-violet-600 border border-neutral-200 hover:border-violet-500 transition-colors">
             Apply
           </button>
         </div>
@@ -145,7 +145,7 @@ function CartLines({
   const {y} = useScroll(scrollRef);
 
   const className = clsx([
-    y > 0 ? 'border-t border-neutral-800' : '',
+    y > 0 ? 'border-t border-neutral-200' : '',
     layout === 'page'
       ? 'flex-grow md:translate-y-4'
       : 'px-6 pb-6 overflow-auto transition scrollbar-hide',
@@ -174,7 +174,7 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl: string}) {
       <a
         href={checkoutUrl}
         target="_self"
-        className="w-full py-4 bg-white text-black text-sm tracking-[0.2em] uppercase font-medium text-center hover:bg-brand-400 transition-all duration-500"
+        className="w-full py-4 bg-neutral-900 text-white text-sm tracking-[0.2em] uppercase font-medium text-center hover:bg-violet-600 transition-all duration-500"
       >
         Continue to Checkout
       </a>
@@ -192,8 +192,8 @@ function CartSummary({
   layout: Layouts;
 }) {
   const summary = {
-    drawer: 'grid gap-4 p-6 border-t border-neutral-800 bg-neutral-950',
-    page: 'sticky top-nav grid gap-6 p-6 bg-neutral-900 w-full',
+    drawer: 'grid gap-4 p-6 border-t border-neutral-200 bg-neutral-50',
+    page: 'sticky top-nav grid gap-6 p-6 bg-neutral-100 w-full',
   };
 
   return (
@@ -203,8 +203,8 @@ function CartSummary({
       </h2>
       <dl className="grid">
         <div className="flex items-center justify-between">
-          <dt className="text-neutral-400">Subtotal</dt>
-          <dd className="text-lg font-medium" data-test="subtotal">
+          <dt className="text-neutral-500">Subtotal</dt>
+          <dd className="text-lg font-medium text-neutral-900" data-test="subtotal">
             {cost?.subtotalAmount?.amount ? (
               <Money data={cost?.subtotalAmount} />
             ) : (
@@ -246,7 +246,7 @@ function CartLineItem({line}: {line: CartLine}) {
             width={100}
             height={100}
             data={merchandise.image}
-            className="object-cover object-center w-20 h-20 bg-neutral-900"
+            className="object-cover object-center w-20 h-20 bg-neutral-100"
             alt={merchandise.title}
           />
         )}
@@ -257,12 +257,12 @@ function CartLineItem({line}: {line: CartLine}) {
           {merchandise?.product?.handle ? (
             <Link
               to={`/products/${merchandise.product.handle}`}
-              className="text-sm font-medium hover:text-brand-400 transition-colors"
+              className="text-sm font-medium text-neutral-900 hover:text-violet-600 transition-colors"
             >
               {merchandise?.product?.title || ''}
             </Link>
           ) : (
-            <span className="text-sm font-medium">{merchandise?.product?.title || ''}</span>
+            <span className="text-sm font-medium text-neutral-900">{merchandise?.product?.title || ''}</span>
           )}
 
           <div className="mt-1 space-y-0.5">
@@ -276,7 +276,7 @@ function CartLineItem({line}: {line: CartLine}) {
 
         <div className="flex items-center justify-between mt-3">
           <CartLineQuantityAdjust line={line} />
-          <CartLinePrice line={line} as="span" className="text-sm font-medium" />
+          <CartLinePrice line={line} as="span" className="text-sm font-medium text-neutral-900" />
         </div>
       </div>
 
@@ -295,7 +295,7 @@ function ItemRemoveButton({lineId}: {lineId: CartLine['id']}) {
       }}
     >
       <button
-        className="flex items-center justify-center w-8 h-8 text-neutral-500 hover:text-white transition-colors"
+        className="flex items-center justify-center w-8 h-8 text-neutral-400 hover:text-red-500 transition-colors"
         type="submit"
         aria-label="Remove item"
       >
@@ -321,12 +321,12 @@ function CartLineQuantityAdjust({line}: {line: CartLine}) {
   const nextQuantity = Number((optimisticQuantity + 1).toFixed(0));
 
   return (
-    <div className="flex items-center border border-neutral-800">
+    <div className="flex items-center border border-neutral-200">
       <UpdateCartButton lines={[{id: lineId, quantity: prevQuantity}]}>
         <button
           name="decrease-quantity"
           aria-label="Decrease quantity"
-          className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-white transition-colors disabled:text-neutral-700 disabled:cursor-not-allowed"
+          className="w-8 h-8 flex items-center justify-center text-neutral-500 hover:text-neutral-900 transition-colors disabled:text-neutral-300 disabled:cursor-not-allowed"
           value={prevQuantity}
           disabled={optimisticQuantity <= 1}
         >
@@ -338,13 +338,13 @@ function CartLineQuantityAdjust({line}: {line: CartLine}) {
         </button>
       </UpdateCartButton>
 
-      <div className="w-10 text-center text-sm" data-test="item-quantity">
+      <div className="w-10 text-center text-sm text-neutral-900" data-test="item-quantity">
         {optimisticQuantity}
       </div>
 
       <UpdateCartButton lines={[{id: lineId, quantity: nextQuantity}]}>
         <button
-          className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-white transition-colors"
+          className="w-8 h-8 flex items-center justify-center text-neutral-500 hover:text-neutral-900 transition-colors"
           name="increase-quantity"
           value={nextQuantity}
           aria-label="Increase quantity"
@@ -418,7 +418,7 @@ export function CartEmpty({
   const container = {
     drawer: clsx([
       'flex flex-col items-center justify-center gap-6 px-6 py-12 h-[calc(100vh-5rem)]',
-      y > 0 ? 'border-t border-neutral-800' : '',
+      y > 0 ? 'border-t border-neutral-200' : '',
     ]),
     page: clsx([
       hidden ? '' : 'grid',
@@ -429,18 +429,18 @@ export function CartEmpty({
   return (
     <div ref={scrollRef} className={container[layout]} hidden={hidden}>
       <div className="text-center">
-        <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full bg-neutral-900">
-          <svg className="w-8 h-8 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full bg-neutral-100">
+          <svg className="w-8 h-8 text-neutral-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
           </svg>
         </div>
-        <h3 className="text-lg font-medium mb-2">Your cart is empty</h3>
-        <p className="text-sm text-neutral-400 mb-8">
+        <h3 className="text-lg font-medium text-neutral-900 mb-2">Your cart is empty</h3>
+        <p className="text-sm text-neutral-500 mb-8">
           Looks like you haven't added anything yet. Let's get you started!
         </p>
         <button
           onClick={onClose}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black text-sm tracking-[0.15em] uppercase font-medium hover:bg-brand-400 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white text-sm tracking-[0.15em] uppercase font-medium hover:bg-violet-600 transition-colors"
         >
           Continue Shopping
         </button>

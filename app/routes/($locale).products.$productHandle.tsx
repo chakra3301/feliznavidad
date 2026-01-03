@@ -119,15 +119,15 @@ export default function Product() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#0a0a0a]">
+      <div className="min-h-screen bg-white">
         {/* Breadcrumb */}
         <div className="max-w-7xl mx-auto px-6 py-6">
           <nav className="flex items-center gap-2 text-sm text-neutral-500">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <Link to="/" className="hover:text-violet-600 transition-colors">Home</Link>
             <span>/</span>
-            <Link to="/collections/all" className="hover:text-white transition-colors">Products</Link>
+            <Link to="/collections/all" className="hover:text-violet-600 transition-colors">Products</Link>
             <span>/</span>
-            <span className="text-neutral-300">{title}</span>
+            <span className="text-neutral-700">{title}</span>
           </nav>
         </div>
 
@@ -136,7 +136,7 @@ export default function Product() {
             {/* Product Gallery */}
             <div className="space-y-4">
               {/* Main Image */}
-              <div className="aspect-[3/4] bg-neutral-900 overflow-hidden relative group">
+              <div className="aspect-[3/4] bg-neutral-100 overflow-hidden relative group">
                 {media.nodes[selectedImage] && (
                   <Image
                     data={media.nodes[selectedImage].previewImage || media.nodes[selectedImage]}
@@ -150,7 +150,7 @@ export default function Product() {
                   <>
                     <button
                       onClick={() => setSelectedImage((prev) => (prev === 0 ? media.nodes.length - 1 : prev - 1))}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/20 text-neutral-900"
                       aria-label="Previous image"
                     >
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,7 +159,7 @@ export default function Product() {
                     </button>
                     <button
                       onClick={() => setSelectedImage((prev) => (prev === media.nodes.length - 1 ? 0 : prev + 1))}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-black/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/20 text-neutral-900"
                       aria-label="Next image"
                     >
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -178,10 +178,10 @@ export default function Product() {
                       key={image.id || i}
                       onClick={() => setSelectedImage(i)}
                       className={clsx(
-                        'aspect-square bg-neutral-900 overflow-hidden transition-all duration-300',
+                        'aspect-square bg-neutral-100 overflow-hidden transition-all duration-300',
                         selectedImage === i 
-                          ? 'ring-2 ring-brand-500' 
-                          : 'ring-1 ring-transparent hover:ring-neutral-700'
+                          ? 'ring-2 ring-violet-500' 
+                          : 'ring-1 ring-transparent hover:ring-neutral-300'
                       )}
                     >
                       <Image
@@ -200,26 +200,26 @@ export default function Product() {
               {/* Header */}
               <div className="space-y-4">
                 {vendor && (
-                  <span className="text-xs tracking-[0.3em] uppercase text-brand-400/70">
+                  <span className="text-xs tracking-[0.3em] uppercase text-violet-600/80">
                     {vendor}
                   </span>
                 )}
-                <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl leading-tight">
+                <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl leading-tight text-neutral-900">
                   {title}
                 </h1>
                 <div className="flex items-baseline gap-4">
                   <Money
                     data={selectedVariant.price}
-                    className="text-2xl font-medium"
+                    className="text-2xl font-medium text-neutral-900"
                   />
                   {selectedVariant.compareAtPrice && (
                     <Money
                       data={selectedVariant.compareAtPrice}
-                      className="text-lg text-neutral-500 line-through"
+                      className="text-lg text-neutral-400 line-through"
                     />
                   )}
                   {selectedVariant.compareAtPrice && (
-                    <span className="text-xs tracking-wider uppercase px-2 py-1 bg-brand-500/20 text-brand-400">
+                    <span className="text-xs tracking-wider uppercase px-2 py-1 bg-violet-100 text-violet-600">
                       Sale
                     </span>
                   )}
@@ -234,11 +234,11 @@ export default function Product() {
               />
 
               {/* Product Details Accordion */}
-              <div className="space-y-4 pt-8 border-t border-neutral-800">
+              <div className="space-y-4 pt-8 border-t border-neutral-200">
                 {descriptionHtml && (
                   <ProductAccordion title="Description" defaultOpen>
                     <div
-                      className="prose prose-invert prose-sm max-w-none text-neutral-300"
+                      className="prose prose-sm max-w-none text-neutral-600"
                       dangerouslySetInnerHTML={{__html: descriptionHtml}}
                     />
                   </ProductAccordion>
@@ -246,13 +246,13 @@ export default function Product() {
                 
                 {shippingPolicy?.body && (
                   <ProductAccordion title="Shipping">
-                    <div className="text-sm text-neutral-400 space-y-2">
+                    <div className="text-sm text-neutral-500 space-y-2">
                       <p>Free shipping on orders over $150</p>
                       <p>Standard delivery: 5-7 business days</p>
                       <p>Express delivery: 2-3 business days</p>
                       <Link 
                         to={`/policies/${shippingPolicy.handle}`}
-                        className="text-brand-400 hover:text-brand-300 transition-colors inline-flex items-center gap-1"
+                        className="text-violet-600 hover:text-violet-500 transition-colors inline-flex items-center gap-1"
                       >
                         Learn more
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -265,12 +265,12 @@ export default function Product() {
 
                 {refundPolicy?.body && (
                   <ProductAccordion title="Returns">
-                    <div className="text-sm text-neutral-400 space-y-2">
+                    <div className="text-sm text-neutral-500 space-y-2">
                       <p>30-day return policy on all items</p>
                       <p>Items must be unworn with original tags</p>
                       <Link 
                         to={`/policies/${refundPolicy.handle}`}
-                        className="text-brand-400 hover:text-brand-300 transition-colors inline-flex items-center gap-1"
+                        className="text-violet-600 hover:text-violet-500 transition-colors inline-flex items-center gap-1"
                       >
                         Learn more
                         <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -314,17 +314,17 @@ export default function Product() {
             resolve={recommended}
           >
             {(products) => products?.nodes?.length > 0 && (
-              <section className="border-t border-neutral-800 py-24 px-6">
+              <section className="border-t border-neutral-200 py-24 px-6 bg-neutral-50">
                 <div className="max-w-7xl mx-auto">
-                  <h2 className="font-serif text-3xl md:text-4xl mb-12">You May Also Like</h2>
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-neutral-800">
+                  <h2 className="font-serif text-3xl md:text-4xl mb-12 text-neutral-900">You May Also Like</h2>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-neutral-200">
                     {products.nodes.slice(0, 4).map((product: any) => (
                       <Link
                         key={product.id}
                         to={`/products/${product.handle}`}
-                        className="group bg-[#0a0a0a] block"
+                        className="group bg-white block"
                       >
-                        <div className="aspect-[3/4] overflow-hidden">
+                        <div className="aspect-[3/4] overflow-hidden bg-neutral-100">
                           {product.featuredImage && (
                             <Image
                               data={product.featuredImage}
@@ -334,11 +334,11 @@ export default function Product() {
                           )}
                         </div>
                         <div className="p-4">
-                          <h3 className="text-sm font-medium">{product.title}</h3>
+                          <h3 className="text-sm font-medium text-neutral-900">{product.title}</h3>
                           {product.variants?.nodes?.[0]?.price && (
                             <Money
                               data={product.variants.nodes[0].price}
-                              className="text-sm text-neutral-400 mt-1"
+                              className="text-sm text-neutral-500 mt-1"
                             />
                           )}
                         </div>
@@ -383,12 +383,12 @@ function ProductAccordion({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className="border-b border-neutral-800 pb-4">
+    <div className="border-b border-neutral-200 pb-4">
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between py-2 text-left"
       >
-        <span className="text-sm tracking-wider uppercase">{title}</span>
+        <span className="text-sm tracking-wider uppercase text-neutral-900">{title}</span>
         <svg
           className={clsx(
             'w-4 h-4 transition-transform duration-300',
@@ -435,10 +435,10 @@ export function ProductForm({
       <div className="space-y-6">
         {productOptions.map((option) => (
           <div key={option.name} className="space-y-3">
-            <label className="text-xs tracking-[0.2em] uppercase text-neutral-400 block">
+            <label className="text-xs tracking-[0.2em] uppercase text-neutral-500 block">
               {option.name}
               {option.optionValues.find(v => v.selected) && (
-                <span className="text-white ml-2">
+                <span className="text-neutral-900 ml-2">
                   — {option.optionValues.find(v => v.selected)?.name}
                 </span>
               )}
@@ -464,8 +464,8 @@ export function ProductForm({
                     className={clsx(
                       'min-w-[3rem] px-4 py-3 text-sm tracking-wider uppercase border transition-all duration-300',
                       selected
-                        ? 'bg-white text-black border-white'
-                        : 'bg-transparent text-white border-neutral-700 hover:border-white',
+                        ? 'bg-neutral-900 text-white border-neutral-900'
+                        : 'bg-transparent text-neutral-700 border-neutral-300 hover:border-violet-600 hover:text-violet-600',
                       !available && 'opacity-30 cursor-not-allowed relative',
                     )}
                   >
@@ -476,7 +476,7 @@ export function ProductForm({
                     )}
                     {!available && (
                       <span className="absolute inset-0 flex items-center justify-center">
-                        <span className="w-full h-px bg-neutral-500 rotate-[-20deg]" />
+                        <span className="w-full h-px bg-neutral-400 rotate-[-20deg]" />
                       </span>
                     )}
                   </Link>
@@ -493,7 +493,7 @@ export function ProductForm({
           {isOutOfStock ? (
             <button
               disabled
-              className="w-full py-4 bg-neutral-800 text-neutral-500 text-sm tracking-[0.2em] uppercase cursor-not-allowed"
+              className="w-full py-4 bg-neutral-200 text-neutral-400 text-sm tracking-[0.2em] uppercase cursor-not-allowed"
             >
               Sold Out
             </button>
