@@ -199,270 +199,13 @@ export type GetShopPrimaryDomainQuery = {
   shop: {primaryDomain: Pick<StorefrontAPI.Domain, 'url'>};
 };
 
-export type CollectionContentFragment = Pick<
-  StorefrontAPI.Collection,
-  'id' | 'handle' | 'title' | 'descriptionHtml'
-> & {
-  heading?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-  byline?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-  cta?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-  spread?: StorefrontAPI.Maybe<{
-    reference?: StorefrontAPI.Maybe<
-      | ({__typename: 'MediaImage'} & Pick<
-          StorefrontAPI.MediaImage,
-          'id' | 'mediaContentType' | 'alt'
-        > & {
-            image?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height'>
-            >;
-            previewImage?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url'>
-            >;
-          })
-      | ({__typename: 'Model3d'} & Pick<
-          StorefrontAPI.Model3d,
-          'id' | 'mediaContentType' | 'alt'
-        > & {
-            sources: Array<
-              Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
-            >;
-            previewImage?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url'>
-            >;
-          })
-      | ({__typename: 'Video'} & Pick<
-          StorefrontAPI.Video,
-          'id' | 'mediaContentType' | 'alt'
-        > & {
-            sources: Array<Pick<StorefrontAPI.VideoSource, 'mimeType' | 'url'>>;
-            previewImage?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url'>
-            >;
-          })
-    >;
-  }>;
-  spreadSecondary?: StorefrontAPI.Maybe<{
-    reference?: StorefrontAPI.Maybe<
-      | ({__typename: 'MediaImage'} & Pick<
-          StorefrontAPI.MediaImage,
-          'id' | 'mediaContentType' | 'alt'
-        > & {
-            image?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height'>
-            >;
-            previewImage?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url'>
-            >;
-          })
-      | ({__typename: 'Model3d'} & Pick<
-          StorefrontAPI.Model3d,
-          'id' | 'mediaContentType' | 'alt'
-        > & {
-            sources: Array<
-              Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
-            >;
-            previewImage?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url'>
-            >;
-          })
-      | ({__typename: 'Video'} & Pick<
-          StorefrontAPI.Video,
-          'id' | 'mediaContentType' | 'alt'
-        > & {
-            sources: Array<Pick<StorefrontAPI.VideoSource, 'mimeType' | 'url'>>;
-            previewImage?: StorefrontAPI.Maybe<
-              Pick<StorefrontAPI.Image, 'url'>
-            >;
-          })
-    >;
-  }>;
-};
-
-export type SeoCollectionContentQueryVariables = StorefrontAPI.Exact<{
-  handle?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
+export type HomepageSeoQueryVariables = StorefrontAPI.Exact<{
   country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
   language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
 }>;
 
-export type SeoCollectionContentQuery = {
-  hero?: StorefrontAPI.Maybe<
-    Pick<
-      StorefrontAPI.Collection,
-      'id' | 'handle' | 'title' | 'descriptionHtml'
-    > & {
-      heading?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-      byline?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-      cta?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-      spread?: StorefrontAPI.Maybe<{
-        reference?: StorefrontAPI.Maybe<
-          | ({__typename: 'MediaImage'} & Pick<
-              StorefrontAPI.MediaImage,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                image?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-          | ({__typename: 'Model3d'} & Pick<
-              StorefrontAPI.Model3d,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                sources: Array<
-                  Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-          | ({__typename: 'Video'} & Pick<
-              StorefrontAPI.Video,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                sources: Array<
-                  Pick<StorefrontAPI.VideoSource, 'mimeType' | 'url'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-        >;
-      }>;
-      spreadSecondary?: StorefrontAPI.Maybe<{
-        reference?: StorefrontAPI.Maybe<
-          | ({__typename: 'MediaImage'} & Pick<
-              StorefrontAPI.MediaImage,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                image?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-          | ({__typename: 'Model3d'} & Pick<
-              StorefrontAPI.Model3d,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                sources: Array<
-                  Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-          | ({__typename: 'Video'} & Pick<
-              StorefrontAPI.Video,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                sources: Array<
-                  Pick<StorefrontAPI.VideoSource, 'mimeType' | 'url'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-        >;
-      }>;
-    }
-  >;
+export type HomepageSeoQuery = {
   shop: Pick<StorefrontAPI.Shop, 'name' | 'description'>;
-};
-
-export type HeroCollectionContentQueryVariables = StorefrontAPI.Exact<{
-  handle?: StorefrontAPI.InputMaybe<StorefrontAPI.Scalars['String']['input']>;
-  country?: StorefrontAPI.InputMaybe<StorefrontAPI.CountryCode>;
-  language?: StorefrontAPI.InputMaybe<StorefrontAPI.LanguageCode>;
-}>;
-
-export type HeroCollectionContentQuery = {
-  hero?: StorefrontAPI.Maybe<
-    Pick<
-      StorefrontAPI.Collection,
-      'id' | 'handle' | 'title' | 'descriptionHtml'
-    > & {
-      heading?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-      byline?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-      cta?: StorefrontAPI.Maybe<Pick<StorefrontAPI.Metafield, 'value'>>;
-      spread?: StorefrontAPI.Maybe<{
-        reference?: StorefrontAPI.Maybe<
-          | ({__typename: 'MediaImage'} & Pick<
-              StorefrontAPI.MediaImage,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                image?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-          | ({__typename: 'Model3d'} & Pick<
-              StorefrontAPI.Model3d,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                sources: Array<
-                  Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-          | ({__typename: 'Video'} & Pick<
-              StorefrontAPI.Video,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                sources: Array<
-                  Pick<StorefrontAPI.VideoSource, 'mimeType' | 'url'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-        >;
-      }>;
-      spreadSecondary?: StorefrontAPI.Maybe<{
-        reference?: StorefrontAPI.Maybe<
-          | ({__typename: 'MediaImage'} & Pick<
-              StorefrontAPI.MediaImage,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                image?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'id' | 'url' | 'width' | 'height'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-          | ({__typename: 'Model3d'} & Pick<
-              StorefrontAPI.Model3d,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                sources: Array<
-                  Pick<StorefrontAPI.Model3dSource, 'mimeType' | 'url'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-          | ({__typename: 'Video'} & Pick<
-              StorefrontAPI.Video,
-              'id' | 'mediaContentType' | 'alt'
-            > & {
-                sources: Array<
-                  Pick<StorefrontAPI.VideoSource, 'mimeType' | 'url'>
-                >;
-                previewImage?: StorefrontAPI.Maybe<
-                  Pick<StorefrontAPI.Image, 'url'>
-                >;
-              })
-        >;
-      }>;
-    }
-  >;
 };
 
 export type HomepageFeaturedProductsQueryVariables = StorefrontAPI.Exact<{
@@ -1375,19 +1118,15 @@ interface GeneratedQueryTypes {
     return: GetShopPrimaryDomainQuery;
     variables: GetShopPrimaryDomainQueryVariables;
   };
-  '#graphql\n  query seoCollectionContent($handle: String, $country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    hero: collection(handle: $handle) {\n      ...CollectionContent\n    }\n    shop {\n      name\n      description\n    }\n  }\n  #graphql\n  fragment CollectionContent on Collection {\n    id\n    handle\n    title\n    descriptionHtml\n    heading: metafield(namespace: "hero", key: "title") {\n      value\n    }\n    byline: metafield(namespace: "hero", key: "byline") {\n      value\n    }\n    cta: metafield(namespace: "hero", key: "cta") {\n      value\n    }\n    spread: metafield(namespace: "hero", key: "spread") {\n      reference {\n        ...Media\n      }\n    }\n    spreadSecondary: metafield(namespace: "hero", key: "spread_secondary") {\n      reference {\n        ...Media\n      }\n    }\n  }\n  #graphql\n  fragment Media on Media {\n    __typename\n    mediaContentType\n    alt\n    previewImage {\n      url\n    }\n    ... on MediaImage {\n      id\n      image {\n        id\n        url\n        width\n        height\n      }\n    }\n    ... on Video {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on Model3d {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on ExternalVideo {\n      id\n      embedUrl\n      host\n    }\n  }\n\n\n': {
-    return: SeoCollectionContentQuery;
-    variables: SeoCollectionContentQueryVariables;
+  '#graphql\n  query HomepageSeo($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    shop {\n      name\n      description\n    }\n  }\n': {
+    return: HomepageSeoQuery;
+    variables: HomepageSeoQueryVariables;
   };
-  '#graphql\n  query heroCollectionContent($handle: String, $country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    hero: collection(handle: $handle) {\n      ...CollectionContent\n    }\n  }\n  #graphql\n  fragment CollectionContent on Collection {\n    id\n    handle\n    title\n    descriptionHtml\n    heading: metafield(namespace: "hero", key: "title") {\n      value\n    }\n    byline: metafield(namespace: "hero", key: "byline") {\n      value\n    }\n    cta: metafield(namespace: "hero", key: "cta") {\n      value\n    }\n    spread: metafield(namespace: "hero", key: "spread") {\n      reference {\n        ...Media\n      }\n    }\n    spreadSecondary: metafield(namespace: "hero", key: "spread_secondary") {\n      reference {\n        ...Media\n      }\n    }\n  }\n  #graphql\n  fragment Media on Media {\n    __typename\n    mediaContentType\n    alt\n    previewImage {\n      url\n    }\n    ... on MediaImage {\n      id\n      image {\n        id\n        url\n        width\n        height\n      }\n    }\n    ... on Video {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on Model3d {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on ExternalVideo {\n      id\n      embedUrl\n      host\n    }\n  }\n\n\n': {
-    return: HeroCollectionContentQuery;
-    variables: HeroCollectionContentQueryVariables;
-  };
-  '#graphql\n  query homepageFeaturedProducts($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    products(first: 8) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        product {\n          handle\n          title\n        }\n      }\n    }\n  }\n\n': {
+  '#graphql\n  query homepageFeaturedProducts($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    products(first: 8, sortKey: CREATED_AT, reverse: true) {\n      nodes {\n        ...ProductCard\n      }\n    }\n  }\n  #graphql\n  fragment ProductCard on Product {\n    id\n    title\n    publishedAt\n    handle\n    vendor\n    variants(first: 1) {\n      nodes {\n        id\n        availableForSale\n        image {\n          url\n          altText\n          width\n          height\n        }\n        price {\n          amount\n          currencyCode\n        }\n        compareAtPrice {\n          amount\n          currencyCode\n        }\n        selectedOptions {\n          name\n          value\n        }\n        product {\n          handle\n          title\n        }\n      }\n    }\n  }\n\n': {
     return: HomepageFeaturedProductsQuery;
     variables: HomepageFeaturedProductsQueryVariables;
   };
-  '#graphql\n  query homepageFeaturedCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(\n      first: 4,\n      sortKey: UPDATED_AT\n    ) {\n      nodes {\n        id\n        title\n        handle\n        image {\n          altText\n          width\n          height\n          url\n        }\n      }\n    }\n  }\n': {
+  '#graphql\n  query homepageFeaturedCollections($country: CountryCode, $language: LanguageCode)\n  @inContext(country: $country, language: $language) {\n    collections(first: 6, sortKey: UPDATED_AT) {\n      nodes {\n        id\n        title\n        handle\n        image {\n          altText\n          width\n          height\n          url\n        }\n      }\n    }\n  }\n': {
     return: HomepageFeaturedCollectionsQuery;
     variables: HomepageFeaturedCollectionsQueryVariables;
   };
@@ -1427,7 +1166,7 @@ interface GeneratedQueryTypes {
     return: PoliciesIndexQuery;
     variables: PoliciesIndexQueryVariables;
   };
-  '#graphql\n  query Product(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      ...Product\n    }\n    shop {\n      name\n      primaryDomain {\n        url\n      }\n      shippingPolicy {\n        body\n        handle\n      }\n      refundPolicy {\n        body\n        handle\n      }\n    }\n  }\n  #graphql\n  fragment Media on Media {\n    __typename\n    mediaContentType\n    alt\n    previewImage {\n      url\n    }\n    ... on MediaImage {\n      id\n      image {\n        id\n        url\n        width\n        height\n      }\n    }\n    ... on Video {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on Model3d {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on ExternalVideo {\n      id\n      embedUrl\n      host\n    }\n  }\n\n  #graphql\n  fragment Product on Product {\n    id\n    title\n    vendor\n    handle\n    descriptionHtml\n    description\n    encodedVariantExistence\n    encodedVariantAvailability\n    options {\n      name\n      optionValues {\n        name\n        firstSelectableVariant {\n          ...ProductVariant\n        }\n        swatch {\n          color\n          image {\n            previewImage {\n              url\n            }\n          }\n        }\n      }\n    }\n    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {\n      ...ProductVariant\n    }\n    adjacentVariants (selectedOptions: $selectedOptions) {\n      ...ProductVariant\n    }\n    seo {\n      description\n      title\n    }\n    media(first: 7) {\n      nodes {\n        ...Media\n      }\n    }\n  }\n  #graphql\n  fragment ProductVariant on ProductVariant {\n    id\n    availableForSale\n    selectedOptions {\n      name\n      value\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n  }\n\n\n': {
+  '#graphql\n  query Product(\n    $country: CountryCode\n    $language: LanguageCode\n    $handle: String!\n    $selectedOptions: [SelectedOptionInput!]!\n  ) @inContext(country: $country, language: $language) {\n    product(handle: $handle) {\n      ...Product\n    }\n    shop {\n      name\n      primaryDomain {\n        url\n      }\n      shippingPolicy {\n        body\n        handle\n      }\n      refundPolicy {\n        body\n        handle\n      }\n    }\n  }\n  #graphql\n  fragment Media on Media {\n    __typename\n    mediaContentType\n    alt\n    previewImage {\n      url\n    }\n    ... on MediaImage {\n      id\n      image {\n        id\n        url\n        width\n        height\n      }\n    }\n    ... on Video {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on Model3d {\n      id\n      sources {\n        mimeType\n        url\n      }\n    }\n    ... on ExternalVideo {\n      id\n      embedUrl\n      host\n    }\n  }\n\n  #graphql\n  fragment Product on Product {\n    id\n    title\n    vendor\n    handle\n    descriptionHtml\n    description\n    encodedVariantExistence\n    encodedVariantAvailability\n    options {\n      name\n      optionValues {\n        name\n        firstSelectableVariant {\n          ...ProductVariant\n        }\n        swatch {\n          color\n          image {\n            previewImage {\n              url\n            }\n          }\n        }\n      }\n    }\n    selectedOrFirstAvailableVariant(selectedOptions: $selectedOptions, ignoreUnknownOptions: true, caseInsensitiveMatch: true) {\n      ...ProductVariant\n    }\n    adjacentVariants (selectedOptions: $selectedOptions) {\n      ...ProductVariant\n    }\n    seo {\n      description\n      title\n    }\n    media(first: 10) {\n      nodes {\n        ...Media\n      }\n    }\n  }\n  #graphql\n  fragment ProductVariant on ProductVariant {\n    id\n    availableForSale\n    selectedOptions {\n      name\n      value\n    }\n    image {\n      id\n      url\n      altText\n      width\n      height\n    }\n    price {\n      amount\n      currencyCode\n    }\n    compareAtPrice {\n      amount\n      currencyCode\n    }\n    sku\n    title\n    unitPrice {\n      amount\n      currencyCode\n    }\n    product {\n      title\n      handle\n    }\n  }\n\n\n': {
     return: ProductQuery;
     variables: ProductQueryVariables;
   };

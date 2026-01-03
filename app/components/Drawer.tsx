@@ -1,9 +1,6 @@
 import {Fragment, useState} from 'react';
 import {Dialog, Transition} from '@headlessui/react';
 
-import {Heading} from '~/components/Text';
-import {IconClose} from '~/components/Icon';
-
 /**
  * Drawer component that opens on user click.
  * @param heading - string. Shown at the top of the drawer.
@@ -36,13 +33,13 @@ export function Drawer({
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
-          enterFrom="opacity-0 left-0"
+          enterFrom="opacity-0"
           enterTo="opacity-100"
           leave="ease-in duration-200"
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm" />
         </Transition.Child>
 
         <div className="fixed inset-0">
@@ -61,26 +58,23 @@ export function Drawer({
                 leaveFrom="translate-x-0"
                 leaveTo={offScreen[openFrom]}
               >
-                <Dialog.Panel className="w-screen max-w-lg text-left align-middle transition-all transform shadow-xl h-screen-dynamic bg-contrast">
-                  <header
-                    className={`sticky top-0 flex items-center px-6 h-nav sm:px-8 md:px-12 ${
-                      heading ? 'justify-between' : 'justify-end'
-                    }`}
-                  >
+                <Dialog.Panel className="w-screen max-w-md text-left align-middle transition-all transform shadow-2xl h-screen-dynamic bg-neutral-950 border-l border-neutral-800">
+                  <header className="sticky top-0 flex items-center justify-between px-6 h-20 border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-sm z-10">
                     {heading !== null && (
-                      <Dialog.Title>
-                        <Heading as="span" size="lead" id="cart-contents">
-                          {heading}
-                        </Heading>
+                      <Dialog.Title className="text-lg font-medium tracking-wide">
+                        {heading}
                       </Dialog.Title>
                     )}
                     <button
                       type="button"
-                      className="p-4 -m-4 transition text-primary hover:text-primary/50"
+                      className="p-2 -m-2 text-neutral-400 hover:text-white transition-colors"
                       onClick={onClose}
                       data-test="close-cart"
+                      aria-label="Close panel"
                     >
-                      <IconClose aria-label="Close panel" />
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
                   </header>
                   {children}

@@ -1,11 +1,10 @@
-import {useRef, Suspense} from 'react';
-import {Disclosure, Listbox} from '@headlessui/react';
+import {useRef, Suspense, useState} from 'react';
 import {
   defer,
   type MetaArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {useLoaderData, Await} from '@remix-run/react';
+import {useLoaderData, Await, Link} from '@remix-run/react';
 import {
   getSeoMeta,
   Money,
@@ -17,6 +16,7 @@ import {
   useSelectedOptionInUrlParam,
   getProductOptions,
   type MappedProductOptions,
+  Image,
 } from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';
 import clsx from 'clsx';
@@ -26,15 +26,7 @@ import type {
 } from '@shopify/hydrogen/storefront-api-types';
 
 import type {ProductFragment} from 'storefrontapi.generated';
-import {Heading, Section, Text} from '~/components/Text';
-import {Link} from '~/components/Link';
-import {Button} from '~/components/Button';
 import {AddToCartButton} from '~/components/AddToCartButton';
-import {Skeleton} from '~/components/Skeleton';
-import {ProductSwimlane} from '~/components/ProductSwimlane';
-import {ProductGallery} from '~/components/ProductGallery';
-import {IconCaret, IconCheck, IconClose} from '~/components/Icon';
-import {getExcerpt} from '~/lib/utils';
 import {seoPayload} from '~/lib/seo.server';
 import type {Storefront} from '~/lib/type';
 import {routeHeaders} from '~/data/cache';
@@ -46,19 +38,12 @@ export async function loader(args: LoaderFunctionArgs) {
   const {productHandle} = args.params;
   invariant(productHandle, 'Missing productHandle param, check route filename');
 
-  // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
   return defer({...deferredData, ...criticalData});
 }
 
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
 async function loadCriticalData({
   params,
   request,
@@ -78,7 +63,6 @@ async function loadCriticalData({
         language: context.storefront.i18n.language,
       },
     }),
-    // Add other queries here, so that they are loaded in parallel
   ]);
 
   if (!product?.id) {
@@ -105,15 +89,7 @@ async function loadCriticalData({
   };
 }
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
 function loadDeferredData(args: LoaderFunctionArgs) {
-  // Put any API calls that are not critical to be available on first page render
-  // For example: product reviews, product recommendations, social feeds.
-
   return {};
 }
 
@@ -127,81 +103,255 @@ export default function Product() {
   const {media, title, vendor, descriptionHtml} = product;
   const {shippingPolicy, refundPolicy} = shop;
 
-  // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
     product.selectedOrFirstAvailableVariant,
     variants,
   );
 
-  // Sets the search param to the selected variant without navigation
-  // only when no search params are set in the url
   useSelectedOptionInUrlParam(selectedVariant.selectedOptions);
 
-  // Get the product options array
   const productOptions = getProductOptions({
     ...product,
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
+  const [selectedImage, setSelectedImage] = useState(0);
+
   return (
     <>
-      <Section className="px-0 md:px-8 lg:px-12">
-        <div className="grid items-start md:gap-6 lg:gap-20 md:grid-cols-2 lg:grid-cols-3">
-          <ProductGallery
-            media={media.nodes}
-            className="w-full lg:col-span-2"
-          />
-          <div className="sticky md:-mb-nav md:top-nav md:-translate-y-nav md:h-screen md:pt-nav hiddenScroll md:overflow-y-scroll">
-            <section className="flex flex-col w-full max-w-xl gap-8 p-6 md:mx-auto md:max-w-sm md:px-0">
-              <div className="grid gap-2">
-                <Heading as="h1" className="whitespace-normal">
-                  {title}
-                </Heading>
-                {vendor && (
-                  <Text className={'opacity-50 font-medium'}>{vendor}</Text>
+      <div className="min-h-screen bg-[#0a0a0a]">
+        {/* Breadcrumb */}
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <nav className="flex items-center gap-2 text-sm text-neutral-500">
+            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <span>/</span>
+            <Link to="/collections/all" className="hover:text-white transition-colors">Products</Link>
+            <span>/</span>
+            <span className="text-neutral-300">{title}</span>
+          </nav>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-6 pb-24">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+            {/* Product Gallery */}
+            <div className="space-y-4">
+              {/* Main Image */}
+              <div className="aspect-[3/4] bg-neutral-900 overflow-hidden relative group">
+                {media.nodes[selectedImage] && (
+                  <Image
+                    data={media.nodes[selectedImage].previewImage || media.nodes[selectedImage]}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                  />
+                )}
+                
+                {/* Image navigation arrows */}
+                {media.nodes.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setSelectedImage((prev) => (prev === 0 ? media.nodes.length - 1 : prev - 1))}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20"
+                      aria-label="Previous image"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 19.5L8.25 12l7.5-7.5" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={() => setSelectedImage((prev) => (prev === media.nodes.length - 1 ? 0 : prev + 1))}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/10 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/20"
+                      aria-label="Next image"
+                    >
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                      </svg>
+                    </button>
+                  </>
                 )}
               </div>
+              
+              {/* Thumbnail gallery */}
+              {media.nodes.length > 1 && (
+                <div className="grid grid-cols-4 gap-2">
+                  {media.nodes.slice(0, 8).map((image: any, i: number) => (
+                    <button
+                      key={image.id || i}
+                      onClick={() => setSelectedImage(i)}
+                      className={clsx(
+                        'aspect-square bg-neutral-900 overflow-hidden transition-all duration-300',
+                        selectedImage === i 
+                          ? 'ring-2 ring-brand-500' 
+                          : 'ring-1 ring-transparent hover:ring-neutral-700'
+                      )}
+                    >
+                      <Image
+                        data={image.previewImage || image}
+                        className="w-full h-full object-cover"
+                        sizes="100px"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Product Info */}
+            <div className="lg:sticky lg:top-28 lg:self-start space-y-8">
+              {/* Header */}
+              <div className="space-y-4">
+                {vendor && (
+                  <span className="text-xs tracking-[0.3em] uppercase text-brand-400/70">
+                    {vendor}
+                  </span>
+                )}
+                <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl leading-tight">
+                  {title}
+                </h1>
+                <div className="flex items-baseline gap-4">
+                  <Money
+                    data={selectedVariant.price}
+                    className="text-2xl font-medium"
+                  />
+                  {selectedVariant.compareAtPrice && (
+                    <Money
+                      data={selectedVariant.compareAtPrice}
+                      className="text-lg text-neutral-500 line-through"
+                    />
+                  )}
+                  {selectedVariant.compareAtPrice && (
+                    <span className="text-xs tracking-wider uppercase px-2 py-1 bg-brand-500/20 text-brand-400">
+                      Sale
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Variant Selector */}
               <ProductForm
                 productOptions={productOptions}
                 selectedVariant={selectedVariant}
                 storeDomain={storeDomain}
               />
-              <div className="grid gap-4 py-4">
+
+              {/* Product Details Accordion */}
+              <div className="space-y-4 pt-8 border-t border-neutral-800">
                 {descriptionHtml && (
-                  <ProductDetail
-                    title="Product Details"
-                    content={descriptionHtml}
-                  />
+                  <ProductAccordion title="Description" defaultOpen>
+                    <div
+                      className="prose prose-invert prose-sm max-w-none text-neutral-300"
+                      dangerouslySetInnerHTML={{__html: descriptionHtml}}
+                    />
+                  </ProductAccordion>
                 )}
+                
                 {shippingPolicy?.body && (
-                  <ProductDetail
-                    title="Shipping"
-                    content={getExcerpt(shippingPolicy.body)}
-                    learnMore={`/policies/${shippingPolicy.handle}`}
-                  />
+                  <ProductAccordion title="Shipping">
+                    <div className="text-sm text-neutral-400 space-y-2">
+                      <p>Free shipping on orders over $150</p>
+                      <p>Standard delivery: 5-7 business days</p>
+                      <p>Express delivery: 2-3 business days</p>
+                      <Link 
+                        to={`/policies/${shippingPolicy.handle}`}
+                        className="text-brand-400 hover:text-brand-300 transition-colors inline-flex items-center gap-1"
+                      >
+                        Learn more
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </ProductAccordion>
                 )}
+
                 {refundPolicy?.body && (
-                  <ProductDetail
-                    title="Returns"
-                    content={getExcerpt(refundPolicy.body)}
-                    learnMore={`/policies/${refundPolicy.handle}`}
-                  />
+                  <ProductAccordion title="Returns">
+                    <div className="text-sm text-neutral-400 space-y-2">
+                      <p>30-day return policy on all items</p>
+                      <p>Items must be unworn with original tags</p>
+                      <Link 
+                        to={`/policies/${refundPolicy.handle}`}
+                        className="text-brand-400 hover:text-brand-300 transition-colors inline-flex items-center gap-1"
+                      >
+                        Learn more
+                        <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </Link>
+                    </div>
+                  </ProductAccordion>
                 )}
               </div>
-            </section>
+
+              {/* Trust badges */}
+              <div className="flex flex-wrap gap-6 pt-6 text-xs text-neutral-500">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
+                  </svg>
+                  <span>Free shipping over $150</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                  </svg>
+                  <span>30-day returns</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                  <span>Secure checkout</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </Section>
-      <Suspense fallback={<Skeleton className="h-32" />}>
-        <Await
-          errorElement="There was a problem loading related products"
-          resolve={recommended}
-        >
-          {(products) => (
-            <ProductSwimlane title="Related Products" products={products} />
-          )}
-        </Await>
-      </Suspense>
+
+        {/* Recommended Products */}
+        <Suspense fallback={null}>
+          <Await
+            errorElement={null}
+            resolve={recommended}
+          >
+            {(products) => products?.nodes?.length > 0 && (
+              <section className="border-t border-neutral-800 py-24 px-6">
+                <div className="max-w-7xl mx-auto">
+                  <h2 className="font-serif text-3xl md:text-4xl mb-12">You May Also Like</h2>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-neutral-800">
+                    {products.nodes.slice(0, 4).map((product: any) => (
+                      <Link
+                        key={product.id}
+                        to={`/products/${product.handle}`}
+                        className="group bg-[#0a0a0a] block"
+                      >
+                        <div className="aspect-[3/4] overflow-hidden">
+                          {product.featuredImage && (
+                            <Image
+                              data={product.featuredImage}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                              sizes="(min-width: 1024px) 25vw, 50vw"
+                            />
+                          )}
+                        </div>
+                        <div className="p-4">
+                          <h3 className="text-sm font-medium">{product.title}</h3>
+                          {product.variants?.nodes?.[0]?.price && (
+                            <Money
+                              data={product.variants.nodes[0].price}
+                              className="text-sm text-neutral-400 mt-1"
+                            />
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+          </Await>
+        </Suspense>
+      </div>
+
       <Analytics.ProductView
         data={{
           products: [
@@ -221,6 +371,48 @@ export default function Product() {
   );
 }
 
+function ProductAccordion({
+  title,
+  children,
+  defaultOpen = false,
+}: {
+  title: string;
+  children: React.ReactNode;
+  defaultOpen?: boolean;
+}) {
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+
+  return (
+    <div className="border-b border-neutral-800 pb-4">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between py-2 text-left"
+      >
+        <span className="text-sm tracking-wider uppercase">{title}</span>
+        <svg
+          className={clsx(
+            'w-4 h-4 transition-transform duration-300',
+            isOpen && 'rotate-180'
+          )}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        </svg>
+      </button>
+      <div
+        className={clsx(
+          'overflow-hidden transition-all duration-300',
+          isOpen ? 'max-h-96 pt-4' : 'max-h-0'
+        )}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export function ProductForm({
   productOptions,
   selectedVariant,
@@ -230,8 +422,6 @@ export function ProductForm({
   selectedVariant: ProductFragment['selectedOrFirstAvailableVariant'];
   storeDomain: string;
 }) {
-  const closeRef = useRef<HTMLButtonElement>(null);
-
   const isOutOfStock = !selectedVariant?.availableForSale;
 
   const isOnSale =
@@ -240,170 +430,114 @@ export function ProductForm({
     selectedVariant?.price?.amount < selectedVariant?.compareAtPrice?.amount;
 
   return (
-    <div className="grid gap-10">
-      <div className="grid gap-4">
-        {productOptions.map((option, optionIndex) => (
-          <div
-            key={option.name}
-            className="product-options flex flex-col flex-wrap mb-4 gap-y-2 last:mb-0"
-          >
-            <Heading as="legend" size="lead" className="min-w-[4rem]">
+    <div className="space-y-8">
+      {/* Variant Options */}
+      <div className="space-y-6">
+        {productOptions.map((option) => (
+          <div key={option.name} className="space-y-3">
+            <label className="text-xs tracking-[0.2em] uppercase text-neutral-400 block">
               {option.name}
-            </Heading>
-            <div className="flex flex-wrap items-baseline gap-4">
-              {option.optionValues.length > 7 ? (
-                <div className="relative w-full">
-                  <Listbox>
-                    {({open}) => (
-                      <>
-                        <Listbox.Button
-                          ref={closeRef}
-                          className={clsx(
-                            'flex items-center justify-between w-full py-3 px-4 border border-primary',
-                            open
-                              ? 'rounded-b md:rounded-t md:rounded-b-none'
-                              : 'rounded',
-                          )}
-                        >
-                          <span>
-                            {
-                              selectedVariant?.selectedOptions[optionIndex]
-                                .value
-                            }
-                          </span>
-                          <IconCaret direction={open ? 'up' : 'down'} />
-                        </Listbox.Button>
-                        <Listbox.Options
-                          className={clsx(
-                            'border-primary bg-contrast absolute bottom-12 z-30 grid h-48 w-full overflow-y-scroll rounded-t border px-2 py-2 transition-[max-height] duration-150 sm:bottom-auto md:rounded-b md:rounded-t-none md:border-t-0 md:border-b',
-                            open ? 'max-h-48' : 'max-h-0',
-                          )}
-                        >
-                          {option.optionValues
-                            .filter((value) => value.available)
-                            .map(
-                              ({
-                                isDifferentProduct,
-                                name,
-                                variantUriQuery,
-                                handle,
-                                selected,
-                              }) => (
-                                <Listbox.Option
-                                  key={`option-${option.name}-${name}`}
-                                  value={name}
-                                >
-                                  <Link
-                                    {...(!isDifferentProduct
-                                      ? {rel: 'nofollow'}
-                                      : {})}
-                                    to={`/products/${handle}?${variantUriQuery}`}
-                                    preventScrollReset
-                                    className={clsx(
-                                      'text-primary w-full p-2 transition rounded flex justify-start items-center text-left cursor-pointer',
-                                      selected && 'bg-primary/10',
-                                    )}
-                                    onClick={() => {
-                                      if (!closeRef?.current) return;
-                                      closeRef.current.click();
-                                    }}
-                                  >
-                                    {name}
-                                    {selected && (
-                                      <span className="ml-2">
-                                        <IconCheck />
-                                      </span>
-                                    )}
-                                  </Link>
-                                </Listbox.Option>
-                              ),
-                            )}
-                        </Listbox.Options>
-                      </>
+              {option.optionValues.find(v => v.selected) && (
+                <span className="text-white ml-2">
+                  — {option.optionValues.find(v => v.selected)?.name}
+                </span>
+              )}
+            </label>
+            <div className="flex flex-wrap gap-2">
+              {option.optionValues.map(
+                ({
+                  isDifferentProduct,
+                  name,
+                  variantUriQuery,
+                  handle,
+                  selected,
+                  available,
+                  swatch,
+                }) => (
+                  <Link
+                    key={option.name + name}
+                    {...(!isDifferentProduct ? {rel: 'nofollow'} : {})}
+                    to={`/products/${handle}?${variantUriQuery}`}
+                    preventScrollReset
+                    prefetch="intent"
+                    replace
+                    className={clsx(
+                      'min-w-[3rem] px-4 py-3 text-sm tracking-wider uppercase border transition-all duration-300',
+                      selected
+                        ? 'bg-white text-black border-white'
+                        : 'bg-transparent text-white border-neutral-700 hover:border-white',
+                      !available && 'opacity-30 cursor-not-allowed relative',
                     )}
-                  </Listbox>
-                </div>
-              ) : (
-                option.optionValues.map(
-                  ({
-                    isDifferentProduct,
-                    name,
-                    variantUriQuery,
-                    handle,
-                    selected,
-                    available,
-                    swatch,
-                  }) => (
-                    <Link
-                      key={option.name + name}
-                      {...(!isDifferentProduct ? {rel: 'nofollow'} : {})}
-                      to={`/products/${handle}?${variantUriQuery}`}
-                      preventScrollReset
-                      prefetch="intent"
-                      replace
-                      className={clsx(
-                        'leading-none py-1 border-b-[1.5px] cursor-pointer transition-all duration-200',
-                        selected ? 'border-primary/50' : 'border-primary/0',
-                        available ? 'opacity-100' : 'opacity-50',
-                      )}
-                    >
+                  >
+                    {swatch ? (
                       <ProductOptionSwatch swatch={swatch} name={name} />
-                    </Link>
-                  ),
-                )
+                    ) : (
+                      name
+                    )}
+                    {!available && (
+                      <span className="absolute inset-0 flex items-center justify-center">
+                        <span className="w-full h-px bg-neutral-500 rotate-[-20deg]" />
+                      </span>
+                    )}
+                  </Link>
+                ),
               )}
             </div>
           </div>
         ))}
-        {selectedVariant && (
-          <div className="grid items-stretch gap-4">
-            {isOutOfStock ? (
-              <Button variant="secondary" disabled>
-                <Text>Sold out</Text>
-              </Button>
-            ) : (
-              <AddToCartButton
-                lines={[
-                  {
-                    merchandiseId: selectedVariant.id!,
-                    quantity: 1,
-                  },
-                ]}
-                variant="primary"
-                data-test="add-to-cart"
-              >
-                <Text
+      </div>
+
+      {/* Add to Cart Section */}
+      {selectedVariant && (
+        <div className="space-y-4">
+          {isOutOfStock ? (
+            <button
+              disabled
+              className="w-full py-4 bg-neutral-800 text-neutral-500 text-sm tracking-[0.2em] uppercase cursor-not-allowed"
+            >
+              Sold Out
+            </button>
+          ) : (
+            <AddToCartButton
+              lines={[
+                {
+                  merchandiseId: selectedVariant.id!,
+                  quantity: 1,
+                },
+              ]}
+              variant="primary"
+              data-test="add-to-cart"
+              className="w-full py-4 bg-white text-black text-sm tracking-[0.2em] uppercase font-medium hover:bg-brand-400 transition-all duration-500"
+            >
+              <span className="flex items-center justify-center gap-3">
+                <span>Add to Cart</span>
+                <span className="text-neutral-500">—</span>
+                <Money
+                  withoutTrailingZeros
+                  data={selectedVariant?.price!}
                   as="span"
-                  className="flex items-center justify-center gap-2"
-                >
-                  <span>Add to Cart</span> <span>·</span>{' '}
+                />
+                {isOnSale && (
                   <Money
                     withoutTrailingZeros
-                    data={selectedVariant?.price!}
+                    data={selectedVariant?.compareAtPrice!}
                     as="span"
-                    data-test="price"
+                    className="opacity-50 line-through"
                   />
-                  {isOnSale && (
-                    <Money
-                      withoutTrailingZeros
-                      data={selectedVariant?.compareAtPrice!}
-                      as="span"
-                      className="opacity-50 strike"
-                    />
-                  )}
-                </Text>
-              </AddToCartButton>
-            )}
-            {!isOutOfStock && (
-              <ShopPayButton
-                width="100%"
-                variantIds={[selectedVariant?.id!]}
-                storeDomain={storeDomain}
-              />
-            )}
-          </div>
-        )}
-      </div>
+                )}
+              </span>
+            </AddToCartButton>
+          )}
+          
+          {!isOutOfStock && (
+            <ShopPayButton
+              width="100%"
+              variantIds={[selectedVariant?.id!]}
+              storeDomain={storeDomain}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -418,67 +552,18 @@ function ProductOptionSwatch({
   const image = swatch?.image?.previewImage?.url;
   const color = swatch?.color;
 
-  if (!image && !color) return name;
+  if (!image && !color) return <>{name}</>;
 
   return (
     <div
       aria-label={name}
-      className="w-8 h-8"
+      className="w-6 h-6 rounded-full border border-neutral-600"
       style={{
         backgroundColor: color || 'transparent',
       }}
     >
-      {!!image && <img src={image} alt={name} />}
+      {!!image && <img src={image} alt={name} className="w-full h-full object-cover rounded-full" />}
     </div>
-  );
-}
-
-function ProductDetail({
-  title,
-  content,
-  learnMore,
-}: {
-  title: string;
-  content: string;
-  learnMore?: string;
-}) {
-  return (
-    <Disclosure key={title} as="div" className="grid w-full gap-2">
-      {({open}) => (
-        <>
-          <Disclosure.Button className="text-left">
-            <div className="flex justify-between">
-              <Text size="lead" as="h4">
-                {title}
-              </Text>
-              <IconClose
-                className={clsx(
-                  'transition-transform transform-gpu duration-200',
-                  !open && 'rotate-[45deg]',
-                )}
-              />
-            </div>
-          </Disclosure.Button>
-
-          <Disclosure.Panel className={'pb-4 pt-2 grid gap-2'}>
-            <div
-              className="prose dark:prose-invert"
-              dangerouslySetInnerHTML={{__html: content}}
-            />
-            {learnMore && (
-              <div className="">
-                <Link
-                  className="pb-px border-b border-primary/30 text-primary/50"
-                  to={learnMore}
-                >
-                  Learn more
-                </Link>
-              </div>
-            )}
-          </Disclosure.Panel>
-        </>
-      )}
-    </Disclosure>
   );
 }
 
@@ -555,7 +640,7 @@ const PRODUCT_FRAGMENT = `#graphql
       description
       title
     }
-    media(first: 7) {
+    media(first: 10) {
       nodes {
         ...Media
       }

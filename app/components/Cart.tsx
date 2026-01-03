@@ -17,12 +17,7 @@ import type {
   CartLineUpdateInput,
 } from '@shopify/hydrogen/storefront-api-types';
 
-import {Button} from '~/components/Button';
-import {Text, Heading} from '~/components/Text';
 import {Link} from '~/components/Link';
-import {IconRemove} from '~/components/Icon';
-import {FeaturedProducts} from '~/components/FeaturedProducts';
-import {getInputStyleClasses} from '~/lib/utils';
 
 type Layouts = 'page' | 'drawer';
 
@@ -52,10 +47,9 @@ export function CartDetails({
   layout: Layouts;
   cart: CartType | null;
 }) {
-  // @todo: get optimistic cart cost
   const cartHasItems = !!cart && cart.totalQuantity > 0;
   const container = {
-    drawer: 'grid grid-cols-1 h-screen-no-nav grid-rows-[1fr_auto]',
+    drawer: 'grid grid-cols-1 h-[calc(100vh-5rem)] grid-rows-[1fr_auto]',
     page: 'w-full pb-12 grid md:grid-cols-2 md:items-start gap-8 md:gap-8 lg:gap-12',
   };
 
@@ -72,11 +66,6 @@ export function CartDetails({
   );
 }
 
-/**
- * Temporary discount UI
- * @param discountCodes the current discount codes applied to the cart
- * @todo rework when a design is ready
- */
 function CartDiscounts({
   discountCodes,
 }: {
@@ -91,38 +80,32 @@ function CartDiscounts({
     <>
       {/* Have existing discount, display it with a remove option */}
       <dl className={codes && codes.length !== 0 ? 'grid' : 'hidden'}>
-        <div className="flex items-center justify-between font-medium">
-          <Text as="dt">Discount(s)</Text>
-          <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between">
+          <dt className="text-sm text-neutral-400">Discount(s)</dt>
+          <div className="flex items-center gap-2">
             <UpdateDiscountForm>
-              <button>
-                <IconRemove
-                  aria-hidden="true"
-                  style={{height: 18, marginRight: 4}}
-                />
+              <button className="text-neutral-500 hover:text-white transition-colors">
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </UpdateDiscountForm>
-            <Text as="dd">{codes?.join(', ')}</Text>
+            <dd className="text-sm text-brand-400">{codes?.join(', ')}</dd>
           </div>
         </div>
       </dl>
 
       {/* Show an input to apply a discount */}
       <UpdateDiscountForm discountCodes={codes}>
-        <div
-          className={clsx(
-            'flex',
-            'items-center gap-4 justify-between text-copy',
-          )}
-        >
+        <div className="flex items-center gap-2">
           <input
-            className={getInputStyleClasses()}
+            className="flex-1 bg-neutral-900 border border-neutral-800 px-4 py-3 text-sm placeholder:text-neutral-500 focus:border-brand-500 focus:outline-none transition-colors"
             type="text"
             name="discountCode"
             placeholder="Discount code"
           />
-          <button className="flex justify-end font-medium whitespace-nowrap">
-            Apply Discount
+          <button className="px-4 py-3 text-sm tracking-wider uppercase text-neutral-400 hover:text-white border border-neutral-800 hover:border-neutral-600 transition-colors">
+            Apply
           </button>
         </div>
       </UpdateDiscountForm>
@@ -162,10 +145,10 @@ function CartLines({
   const {y} = useScroll(scrollRef);
 
   const className = clsx([
-    y > 0 ? 'border-t' : '',
+    y > 0 ? 'border-t border-neutral-800' : '',
     layout === 'page'
       ? 'flex-grow md:translate-y-4'
-      : 'px-6 pb-6 sm-max:pt-2 overflow-auto transition md:px-12',
+      : 'px-6 pb-6 overflow-auto transition scrollbar-hide',
   ]);
 
   return (
@@ -174,7 +157,7 @@ function CartLines({
       aria-labelledby="cart-contents"
       className={className}
     >
-      <ul className="grid gap-6 md:gap-10">
+      <ul className="grid gap-6 py-6">
         {currentLines.map((line) => (
           <CartLineItem key={line.id} line={line as CartLine} />
         ))}
@@ -187,13 +170,14 @@ function CartCheckoutActions({checkoutUrl}: {checkoutUrl: string}) {
   if (!checkoutUrl) return null;
 
   return (
-    <div className="flex flex-col mt-2">
-      <a href={checkoutUrl} target="_self">
-        <Button as="span" width="full">
-          Continue to Checkout
-        </Button>
+    <div className="flex flex-col gap-3 mt-4">
+      <a
+        href={checkoutUrl}
+        target="_self"
+        className="w-full py-4 bg-white text-black text-sm tracking-[0.2em] uppercase font-medium text-center hover:bg-brand-400 transition-all duration-500"
+      >
+        Continue to Checkout
       </a>
-      {/* @todo: <CartShopPayButton cart={cart} /> */}
     </div>
   );
 }
@@ -208,8 +192,8 @@ function CartSummary({
   layout: Layouts;
 }) {
   const summary = {
-    drawer: 'grid gap-4 p-6 border-t md:px-12',
-    page: 'sticky top-nav grid gap-6 p-4 md:px-6 md:translate-y-4 bg-primary/5 rounded w-full',
+    drawer: 'grid gap-4 p-6 border-t border-neutral-800 bg-neutral-950',
+    page: 'sticky top-nav grid gap-6 p-6 bg-neutral-900 w-full',
   };
 
   return (
@@ -218,15 +202,15 @@ function CartSummary({
         Order summary
       </h2>
       <dl className="grid">
-        <div className="flex items-center justify-between font-medium">
-          <Text as="dt">Subtotal</Text>
-          <Text as="dd" data-test="subtotal">
+        <div className="flex items-center justify-between">
+          <dt className="text-neutral-400">Subtotal</dt>
+          <dd className="text-lg font-medium" data-test="subtotal">
             {cost?.subtotalAmount?.amount ? (
               <Money data={cost?.subtotalAmount} />
             ) : (
               '-'
             )}
-          </Text>
+          </dd>
         </div>
       </dl>
       {children}
@@ -253,54 +237,50 @@ function CartLineItem({line}: {line: CartLine}) {
       key={id}
       className="flex gap-4"
       style={{
-        // Hide the line item if the optimistic data action is remove
-        // Do not remove the form from the DOM
         display: optimisticData?.action === 'remove' ? 'none' : 'flex',
       }}
     >
-      <div className="flex-shrink">
+      <div className="flex-shrink-0">
         {merchandise.image && (
           <Image
-            width={110}
-            height={110}
+            width={100}
+            height={100}
             data={merchandise.image}
-            className="object-cover object-center w-24 h-24 border rounded md:w-28 md:h-28"
+            className="object-cover object-center w-20 h-20 bg-neutral-900"
             alt={merchandise.title}
           />
         )}
       </div>
 
-      <div className="flex justify-between flex-grow">
-        <div className="grid gap-2">
-          <Heading as="h3" size="copy">
-            {merchandise?.product?.handle ? (
-              <Link to={`/products/${merchandise.product.handle}`}>
-                {merchandise?.product?.title || ''}
-              </Link>
-            ) : (
-              <Text>{merchandise?.product?.title || ''}</Text>
-            )}
-          </Heading>
+      <div className="flex-1 flex flex-col justify-between min-w-0">
+        <div>
+          {merchandise?.product?.handle ? (
+            <Link
+              to={`/products/${merchandise.product.handle}`}
+              className="text-sm font-medium hover:text-brand-400 transition-colors"
+            >
+              {merchandise?.product?.title || ''}
+            </Link>
+          ) : (
+            <span className="text-sm font-medium">{merchandise?.product?.title || ''}</span>
+          )}
 
-          <div className="grid pb-2">
+          <div className="mt-1 space-y-0.5">
             {(merchandise?.selectedOptions || []).map((option) => (
-              <Text color="subtle" key={option.name}>
+              <p key={option.name} className="text-xs text-neutral-500">
                 {option.name}: {option.value}
-              </Text>
+              </p>
             ))}
           </div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex justify-start text-copy">
-              <CartLineQuantityAdjust line={line} />
-            </div>
-            <ItemRemoveButton lineId={id} />
-          </div>
         </div>
-        <Text>
-          <CartLinePrice line={line} as="span" />
-        </Text>
+
+        <div className="flex items-center justify-between mt-3">
+          <CartLineQuantityAdjust line={line} />
+          <CartLinePrice line={line} as="span" className="text-sm font-medium" />
+        </div>
       </div>
+
+      <ItemRemoveButton lineId={id} />
     </li>
   );
 }
@@ -315,11 +295,13 @@ function ItemRemoveButton({lineId}: {lineId: CartLine['id']}) {
       }}
     >
       <button
-        className="flex items-center justify-center w-10 h-10 border rounded"
+        className="flex items-center justify-center w-8 h-8 text-neutral-500 hover:text-white transition-colors"
         type="submit"
+        aria-label="Remove item"
       >
-        <span className="sr-only">Remove</span>
-        <IconRemove aria-hidden="true" />
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+        </svg>
       </button>
       <OptimisticInput id={lineId} data={{action: 'remove'}} />
     </CartForm>
@@ -339,47 +321,42 @@ function CartLineQuantityAdjust({line}: {line: CartLine}) {
   const nextQuantity = Number((optimisticQuantity + 1).toFixed(0));
 
   return (
-    <>
-      <label htmlFor={`quantity-${lineId}`} className="sr-only">
-        Quantity, {optimisticQuantity}
-      </label>
-      <div className="flex items-center border rounded">
-        <UpdateCartButton lines={[{id: lineId, quantity: prevQuantity}]}>
-          <button
-            name="decrease-quantity"
-            aria-label="Decrease quantity"
-            className="w-10 h-10 transition text-primary/50 hover:text-primary disabled:text-primary/10"
-            value={prevQuantity}
-            disabled={optimisticQuantity <= 1}
-          >
-            <span>&#8722;</span>
-            <OptimisticInput
-              id={optimisticId}
-              data={{quantity: prevQuantity}}
-            />
-          </button>
-        </UpdateCartButton>
+    <div className="flex items-center border border-neutral-800">
+      <UpdateCartButton lines={[{id: lineId, quantity: prevQuantity}]}>
+        <button
+          name="decrease-quantity"
+          aria-label="Decrease quantity"
+          className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-white transition-colors disabled:text-neutral-700 disabled:cursor-not-allowed"
+          value={prevQuantity}
+          disabled={optimisticQuantity <= 1}
+        >
+          <span className="text-lg">−</span>
+          <OptimisticInput
+            id={optimisticId}
+            data={{quantity: prevQuantity}}
+          />
+        </button>
+      </UpdateCartButton>
 
-        <div className="px-2 text-center" data-test="item-quantity">
-          {optimisticQuantity}
-        </div>
-
-        <UpdateCartButton lines={[{id: lineId, quantity: nextQuantity}]}>
-          <button
-            className="w-10 h-10 transition text-primary/50 hover:text-primary"
-            name="increase-quantity"
-            value={nextQuantity}
-            aria-label="Increase quantity"
-          >
-            <span>&#43;</span>
-            <OptimisticInput
-              id={optimisticId}
-              data={{quantity: nextQuantity}}
-            />
-          </button>
-        </UpdateCartButton>
+      <div className="w-10 text-center text-sm" data-test="item-quantity">
+        {optimisticQuantity}
       </div>
-    </>
+
+      <UpdateCartButton lines={[{id: lineId, quantity: nextQuantity}]}>
+        <button
+          className="w-8 h-8 flex items-center justify-center text-neutral-400 hover:text-white transition-colors"
+          name="increase-quantity"
+          value={nextQuantity}
+          aria-label="Increase quantity"
+        >
+          <span className="text-lg">+</span>
+          <OptimisticInput
+            id={optimisticId}
+            data={{quantity: nextQuantity}}
+          />
+        </button>
+      </UpdateCartButton>
+    </div>
   );
 }
 
@@ -440,8 +417,8 @@ export function CartEmpty({
 
   const container = {
     drawer: clsx([
-      'content-start gap-4 px-6 pb-8 transition overflow-y-scroll md:gap-12 md:px-12 h-screen-no-nav md:pb-12',
-      y > 0 ? 'border-t' : '',
+      'flex flex-col items-center justify-center gap-6 px-6 py-12 h-[calc(100vh-5rem)]',
+      y > 0 ? 'border-t border-neutral-800' : '',
     ]),
     page: clsx([
       hidden ? '' : 'grid',
@@ -451,24 +428,23 @@ export function CartEmpty({
 
   return (
     <div ref={scrollRef} className={container[layout]} hidden={hidden}>
-      <section className="grid gap-6">
-        <Text format>
-          Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you
-          started!
-        </Text>
-        <div>
-          <Button onClick={onClose}>Continue shopping</Button>
+      <div className="text-center">
+        <div className="w-16 h-16 mx-auto mb-6 flex items-center justify-center rounded-full bg-neutral-900">
+          <svg className="w-8 h-8 text-neutral-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+          </svg>
         </div>
-      </section>
-      <section className="grid gap-8 pt-16">
-        <FeaturedProducts
-          count={4}
-          heading="Shop Best Sellers"
-          layout={layout}
-          onClose={onClose}
-          sortKey="BEST_SELLING"
-        />
-      </section>
+        <h3 className="text-lg font-medium mb-2">Your cart is empty</h3>
+        <p className="text-sm text-neutral-400 mb-8">
+          Looks like you haven't added anything yet. Let's get you started!
+        </p>
+        <button
+          onClick={onClose}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-white text-black text-sm tracking-[0.15em] uppercase font-medium hover:bg-brand-400 transition-colors"
+        >
+          Continue Shopping
+        </button>
+      </div>
     </div>
   );
 }

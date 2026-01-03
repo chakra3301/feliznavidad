@@ -4,14 +4,10 @@ import {
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
 import {Suspense} from 'react';
-import {Await, useLoaderData} from '@remix-run/react';
-import {getSeoMeta} from '@shopify/hydrogen';
+import {Await, useLoaderData, Link} from '@remix-run/react';
+import {getSeoMeta, Image, Money} from '@shopify/hydrogen';
 
-import {Hero} from '~/components/Hero';
-import {FeaturedCollections} from '~/components/FeaturedCollections';
-import {ProductSwimlane} from '~/components/ProductSwimlane';
 import {MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
-import {getHeroPlaceholder} from '~/lib/placeholders';
 import {seoPayload} from '~/lib/seo.server';
 import {routeHeaders} from '~/data/cache';
 
@@ -25,115 +21,50 @@ export async function loader(args: LoaderFunctionArgs) {
     params.locale &&
     params.locale.toLowerCase() !== `${language}-${country}`.toLowerCase()
   ) {
-    // If the locale URL param is defined, yet we still are on `EN-US`
-    // the the locale param must be invalid, send to the 404 page
     throw new Response(null, {status: 404});
   }
 
-  // Start fetching non-critical data without blocking time to first byte
   const deferredData = loadDeferredData(args);
-
-  // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
   return defer({...deferredData, ...criticalData});
 }
 
-/**
- * Load data necessary for rendering content above the fold. This is the critical data
- * needed to render the page. If it's unavailable, the whole page should 400 or 500 error.
- */
 async function loadCriticalData({context, request}: LoaderFunctionArgs) {
-  const [{shop, hero}] = await Promise.all([
-    context.storefront.query(HOMEPAGE_SEO_QUERY, {
-      variables: {handle: 'freestyle'},
-    }),
-    // Add other queries here, so that they are loaded in parallel
+  const [{shop}] = await Promise.all([
+    context.storefront.query(HOMEPAGE_SEO_QUERY),
   ]);
 
   return {
     shop,
-    primaryHero: hero,
     seo: seoPayload.home({url: request.url}),
   };
 }
 
-/**
- * Load data for rendering content below the fold. This data is deferred and will be
- * fetched after the initial page load. If it's unavailable, the page should still 200.
- * Make sure to not throw any errors here, as it will cause the page to 500.
- */
 function loadDeferredData({context}: LoaderFunctionArgs) {
   const {language, country} = context.storefront.i18n;
 
   const featuredProducts = context.storefront
     .query(HOMEPAGE_FEATURED_PRODUCTS_QUERY, {
-      variables: {
-        /**
-         * Country and language properties are automatically injected
-         * into all queries. Passing them is unnecessary unless you
-         * want to override them from the following default:
-         */
-        country,
-        language,
-      },
+      variables: {country, language},
     })
     .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      // eslint-disable-next-line no-console
-      console.error(error);
-      return null;
-    });
-
-  const secondaryHero = context.storefront
-    .query(COLLECTION_HERO_QUERY, {
-      variables: {
-        handle: 'backcountry',
-        country,
-        language,
-      },
-    })
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      // eslint-disable-next-line no-console
       console.error(error);
       return null;
     });
 
   const featuredCollections = context.storefront
     .query(FEATURED_COLLECTIONS_QUERY, {
-      variables: {
-        country,
-        language,
-      },
+      variables: {country, language},
     })
     .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      // eslint-disable-next-line no-console
-      console.error(error);
-      return null;
-    });
-
-  const tertiaryHero = context.storefront
-    .query(COLLECTION_HERO_QUERY, {
-      variables: {
-        handle: 'winter-2022',
-        country,
-        language,
-      },
-    })
-    .catch((error) => {
-      // Log query errors, but don't throw them so the page can still render
-      // eslint-disable-next-line no-console
       console.error(error);
       return null;
     });
 
   return {
     featuredProducts,
-    secondaryHero,
     featuredCollections,
-    tertiaryHero,
   };
 }
 
@@ -142,155 +73,277 @@ export const meta = ({matches}: MetaArgs<typeof loader>) => {
 };
 
 export default function Homepage() {
-  const {
-    primaryHero,
-    secondaryHero,
-    tertiaryHero,
-    featuredCollections,
-    featuredProducts,
-  } = useLoaderData<typeof loader>();
-
-  // TODO: skeletons vs placeholders
-  const skeletons = getHeroPlaceholder([{}, {}, {}]);
+  const {featuredProducts, featuredCollections} = useLoaderData<typeof loader>();
 
   return (
-    <>
-      {primaryHero && (
-        <Hero {...primaryHero} height="full" top loading="eager" />
-      )}
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Background layers */}
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-950/40 via-transparent to-rose-950/30" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(120,0,255,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(255,0,100,0.1),transparent_50%)]" />
+        
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-grid opacity-40" />
 
+        {/* Floating orbs */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-600/20 rounded-full blur-[100px] animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-rose-600/20 rounded-full blur-[100px] animate-float" style={{animationDelay: '-3s'}} />
+
+        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+          <p className="text-xs tracking-[0.5em] uppercase text-brand-300/80 mb-8 font-medium animate-fade-up" style={{animationDelay: '0.1s'}}>
+            Collection 2026
+          </p>
+          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] mb-8 animate-fade-up" style={{animationDelay: '0.2s'}}>
+            <span className="block">Wear the</span>
+            <span className="block italic text-gradient">
+              Future
+            </span>
+          </h1>
+          <p className="text-lg md:text-xl text-neutral-400 max-w-xl mx-auto mb-12 font-light leading-relaxed animate-fade-up" style={{animationDelay: '0.3s'}}>
+            Experimental silhouettes. Sustainable materials. 
+            Designed for those who move differently.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{animationDelay: '0.4s'}}>
+            <Link
+              to="/collections/all"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-black text-sm tracking-[0.2em] uppercase font-medium hover:bg-brand-400 transition-all duration-500"
+            >
+              <span>Shop Collection</span>
+              <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+            <Link
+              to="/collections"
+              className="inline-flex items-center gap-3 px-8 py-4 border border-neutral-700 text-white text-sm tracking-[0.2em] uppercase font-medium hover:border-white transition-all duration-500"
+            >
+              <span>View All</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
+          <span className="text-[10px] tracking-[0.4em] uppercase text-neutral-500">Scroll</span>
+          <div className="w-px h-16 bg-gradient-to-b from-neutral-500 to-transparent" />
+        </div>
+      </section>
+
+      {/* Featured Products */}
       {featuredProducts && (
-        <Suspense>
+        <Suspense fallback={<ProductGridSkeleton />}>
           <Await resolve={featuredProducts}>
             {(response) => {
-              if (
-                !response ||
-                !response?.products ||
-                !response?.products?.nodes
-              ) {
-                return <></>;
-              }
+              if (!response?.products?.nodes?.length) return null;
               return (
-                <ProductSwimlane
-                  products={response.products}
-                  title="Featured Products"
-                  count={4}
-                />
+                <section className="py-24 px-6">
+                  <div className="max-w-7xl mx-auto">
+                    <div className="flex items-end justify-between mb-16">
+                      <div>
+                        <span className="text-xs tracking-[0.4em] uppercase text-brand-400/70 block mb-3">Featured</span>
+                        <h2 className="font-serif text-4xl md:text-5xl">New Arrivals</h2>
+                      </div>
+                      <Link 
+                        to="/collections/all" 
+                        className="hidden md:flex items-center gap-2 text-sm tracking-wider uppercase text-neutral-400 hover:text-white transition-colors group"
+                      >
+                        <span>View All</span>
+                        <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                      </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-neutral-800">
+                      {response.products.nodes.slice(0, 6).map((product: any, index: number) => (
+                        <ProductCard key={product.id} product={product} index={index} />
+                      ))}
+                    </div>
+
+                    <div className="mt-8 flex justify-center md:hidden">
+                      <Link 
+                        to="/collections/all" 
+                        className="btn-secondary"
+                      >
+                        View All Products
+                      </Link>
+                    </div>
+                  </div>
+                </section>
               );
             }}
           </Await>
         </Suspense>
       )}
 
-      {secondaryHero && (
-        <Suspense fallback={<Hero {...skeletons[1]} />}>
-          <Await resolve={secondaryHero}>
-            {(response) => {
-              if (!response || !response?.hero) {
-                return <></>;
-              }
-              return <Hero {...response.hero} />;
-            }}
-          </Await>
-        </Suspense>
-      )}
-
+      {/* Collections Strip */}
       {featuredCollections && (
-        <Suspense>
+        <Suspense fallback={<div className="h-64 bg-neutral-900" />}>
           <Await resolve={featuredCollections}>
             {(response) => {
-              if (
-                !response ||
-                !response?.collections ||
-                !response?.collections?.nodes
-              ) {
-                return <></>;
-              }
+              if (!response?.collections?.nodes?.length) return null;
               return (
-                <FeaturedCollections
-                  collections={response.collections}
-                  title="Collections"
-                />
+                <section className="border-y border-neutral-800">
+                  <div className="flex overflow-x-auto scrollbar-hide">
+                    {response.collections.nodes.map((collection: any) => (
+                      <Link
+                        key={collection.id}
+                        to={`/collections/${collection.handle}`}
+                        className="group flex-shrink-0 w-80 h-72 relative overflow-hidden"
+                      >
+                        {collection.image && (
+                          <Image
+                            data={collection.image}
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                            sizes="320px"
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-black/50 group-hover:bg-black/30 transition-colors duration-500" />
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6">
+                          <span className="text-xl tracking-[0.15em] uppercase font-medium">{collection.title}</span>
+                          <span className="text-xs text-neutral-400 tracking-wider mt-2 group-hover:text-white transition-colors">
+                            Explore →
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
               );
             }}
           </Await>
         </Suspense>
       )}
 
-      {tertiaryHero && (
-        <Suspense fallback={<Hero {...skeletons[2]} />}>
-          <Await resolve={tertiaryHero}>
-            {(response) => {
-              if (!response || !response?.hero) {
-                return <></>;
-              }
-              return <Hero {...response.hero} />;
-            }}
-          </Await>
-        </Suspense>
-      )}
-    </>
+      {/* Marquee Banner */}
+      <div className="py-5 bg-brand-600 overflow-hidden">
+        <div className="animate-marquee flex gap-16 whitespace-nowrap">
+          {[...Array(8)].map((_, i) => (
+            <span key={i} className="text-sm tracking-[0.3em] uppercase font-medium flex items-center gap-16">
+              <span>Free Shipping Over $150</span>
+              <span className="w-2 h-2 bg-white/30 rounded-full" />
+              <span>Sustainable Materials</span>
+              <span className="w-2 h-2 bg-white/30 rounded-full" />
+              <span>Made to Order</span>
+              <span className="w-2 h-2 bg-white/30 rounded-full" />
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* About Section */}
+      <section className="py-32 px-6 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(120,0,255,0.08),transparent_70%)]" />
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <span className="text-xs tracking-[0.4em] uppercase text-brand-400/70 block mb-6">Our Philosophy</span>
+          <h2 className="font-serif text-3xl md:text-5xl leading-tight mb-8">
+            We believe clothing should be an extension of your identity, not a uniform.
+          </h2>
+          <p className="text-lg text-neutral-400 max-w-2xl mx-auto mb-12 leading-relaxed">
+            Each piece is crafted with intention, using only sustainable materials and ethical production methods. 
+            Because looking good should never come at the cost of our planet.
+          </p>
+          <Link
+            to="/pages/about"
+            className="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-neutral-300 hover:text-white transition-colors border-b border-neutral-700 pb-1 hover:border-white"
+          >
+            Learn More About Us
+          </Link>
+        </div>
+      </section>
+    </div>
   );
 }
 
-const COLLECTION_CONTENT_FRAGMENT = `#graphql
-  fragment CollectionContent on Collection {
-    id
-    handle
-    title
-    descriptionHtml
-    heading: metafield(namespace: "hero", key: "title") {
-      value
-    }
-    byline: metafield(namespace: "hero", key: "byline") {
-      value
-    }
-    cta: metafield(namespace: "hero", key: "cta") {
-      value
-    }
-    spread: metafield(namespace: "hero", key: "spread") {
-      reference {
-        ...Media
-      }
-    }
-    spreadSecondary: metafield(namespace: "hero", key: "spread_secondary") {
-      reference {
-        ...Media
-      }
-    }
-  }
-  ${MEDIA_FRAGMENT}
-` as const;
+function ProductCard({product, index}: {product: any; index: number}) {
+  const firstVariant = product.variants?.nodes?.[0];
+  const image = product.featuredImage;
+
+  return (
+    <Link
+      to={`/products/${product.handle}`}
+      className="group relative bg-[#0a0a0a] overflow-hidden block"
+    >
+      <div className="aspect-[3/4] relative overflow-hidden">
+        {image && (
+          <Image
+            data={image}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        {/* Quick view button */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+          <span className="block w-full py-3 bg-white text-black text-xs tracking-[0.2em] uppercase text-center hover:bg-brand-400 transition-colors">
+            Quick View
+          </span>
+        </div>
+      </div>
+
+      <div className="p-5 space-y-2">
+        <h3 className="text-sm tracking-wide font-medium">{product.title}</h3>
+        <div className="flex items-center gap-3">
+          {firstVariant?.price && (
+            <Money
+              data={firstVariant.price}
+              className="text-sm text-neutral-400"
+            />
+          )}
+          {firstVariant?.compareAtPrice && (
+            <Money
+              data={firstVariant.compareAtPrice}
+              className="text-xs text-neutral-600 line-through"
+            />
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function ProductGridSkeleton() {
+  return (
+    <section className="py-24 px-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="mb-16">
+          <div className="h-4 w-24 bg-neutral-800 rounded mb-4" />
+          <div className="h-12 w-48 bg-neutral-800 rounded" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-neutral-800">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="bg-[#0a0a0a]">
+              <div className="aspect-[3/4] bg-neutral-900 animate-pulse" />
+              <div className="p-5 space-y-3">
+                <div className="h-4 w-3/4 bg-neutral-800 rounded" />
+                <div className="h-4 w-1/4 bg-neutral-800 rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 const HOMEPAGE_SEO_QUERY = `#graphql
-  query seoCollectionContent($handle: String, $country: CountryCode, $language: LanguageCode)
+  query HomepageSeo($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
-    hero: collection(handle: $handle) {
-      ...CollectionContent
-    }
     shop {
       name
       description
     }
   }
-  ${COLLECTION_CONTENT_FRAGMENT}
 ` as const;
 
-const COLLECTION_HERO_QUERY = `#graphql
-  query heroCollectionContent($handle: String, $country: CountryCode, $language: LanguageCode)
-  @inContext(country: $country, language: $language) {
-    hero: collection(handle: $handle) {
-      ...CollectionContent
-    }
-  }
-  ${COLLECTION_CONTENT_FRAGMENT}
-` as const;
-
-// @see: https://shopify.dev/api/storefront/current/queries/products
 export const HOMEPAGE_FEATURED_PRODUCTS_QUERY = `#graphql
   query homepageFeaturedProducts($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
-    products(first: 8) {
+    products(first: 8, sortKey: CREATED_AT, reverse: true) {
       nodes {
         ...ProductCard
       }
@@ -299,14 +352,10 @@ export const HOMEPAGE_FEATURED_PRODUCTS_QUERY = `#graphql
   ${PRODUCT_CARD_FRAGMENT}
 ` as const;
 
-// @see: https://shopify.dev/api/storefront/current/queries/collections
 export const FEATURED_COLLECTIONS_QUERY = `#graphql
   query homepageFeaturedCollections($country: CountryCode, $language: LanguageCode)
   @inContext(country: $country, language: $language) {
-    collections(
-      first: 4,
-      sortKey: UPDATED_AT
-    ) {
+    collections(first: 6, sortKey: UPDATED_AT) {
       nodes {
         id
         title

@@ -4,7 +4,7 @@ import {
   type MetaArgs,
   type LoaderFunctionArgs,
 } from '@shopify/remix-oxygen';
-import {useLoaderData, useNavigate} from '@remix-run/react';
+import {useLoaderData, useNavigate, Link} from '@remix-run/react';
 import {useInView} from 'react-intersection-observer';
 import type {
   Filter,
@@ -17,26 +17,23 @@ import {
   getPaginationVariables,
   Analytics,
   getSeoMeta,
+  Image,
+  Money,
 } from '@shopify/hydrogen';
 import invariant from 'tiny-invariant';
 
-import {PageHeader, Section, Text} from '~/components/Text';
-import {Grid} from '~/components/Grid';
-import {Button} from '~/components/Button';
-import {ProductCard} from '~/components/ProductCard';
 import {SortFilter, type SortParam} from '~/components/SortFilter';
 import {PRODUCT_CARD_FRAGMENT} from '~/data/fragments';
 import {routeHeaders} from '~/data/cache';
 import {seoPayload} from '~/lib/seo.server';
 import {FILTER_URL_PREFIX} from '~/components/SortFilter';
-import {getImageLoadingPriority} from '~/lib/const';
 import {parseAsCurrency} from '~/lib/utils';
 
 export const headers = routeHeaders;
 
 export async function loader({params, request, context}: LoaderFunctionArgs) {
   const paginationVariables = getPaginationVariables(request, {
-    pageBy: 8,
+    pageBy: 12,
   });
   const {collectionHandle} = params;
   const locale = context.storefront.i18n;
@@ -90,26 +87,19 @@ export async function loader({params, request, context}: LoaderFunctionArgs) {
     .map((filter) => {
       const foundValue = allFilterValues.find((value) => {
         const valueInput = JSON.parse(value.input as string) as ProductFilter;
-        // special case for price, the user can enter something freeform (still a number, though)
-        // that may not make sense for the locale/currency.
-        // Basically just check if the price filter is applied at all.
         if (valueInput.price && filter.price) {
           return true;
         }
         return (
-          // This comparison should be okay as long as we're not manipulating the input we
-          // get from the API before using it as a URL param.
           JSON.stringify(valueInput) === JSON.stringify(filter)
         );
       });
       if (!foundValue) {
-        // eslint-disable-next-line no-console
         console.error('Could not find filter value for filter', filter);
         return null;
       }
 
       if (foundValue.id === 'filter.v.price') {
-        // Special case for price, we want to show the min and max values as the label.
         const input = JSON.parse(foundValue.input as string) as ProductFilter;
         const min = parseAsCurrency(input.price?.min ?? 0, locale);
         const max = input.price?.max
@@ -148,62 +138,83 @@ export default function Collection() {
   const {ref, inView} = useInView();
 
   return (
-    <>
-      <PageHeader heading={collection.title}>
-        {collection?.description && (
-          <div className="flex items-baseline justify-between w-full">
-            <div>
-              <Text format width="narrow" as="p" className="inline-block">
-                {collection.description}
-              </Text>
-            </div>
-          </div>
+    <div className="min-h-screen bg-[#0a0a0a]">
+      {/* Hero Section */}
+      <div className="relative h-64 md:h-80 overflow-hidden">
+        {collection.image && (
+          <Image
+            data={collection.image}
+            className="absolute inset-0 w-full h-full object-cover"
+            sizes="100vw"
+          />
         )}
-      </PageHeader>
-      <Section>
-        <SortFilter
-          filters={collection.products.filters as Filter[]}
-          appliedFilters={appliedFilters}
-          collections={collections}
-        >
-          <Pagination connection={collection.products}>
-            {({
-              nodes,
-              isLoading,
-              PreviousLink,
-              NextLink,
-              nextPageUrl,
-              hasNextPage,
-              state,
-            }) => (
-              <>
-                <div className="flex items-center justify-center mb-6">
-                  <Button as={PreviousLink} variant="secondary" width="full">
-                    {isLoading ? 'Loading...' : 'Load previous'}
-                  </Button>
-                </div>
-                <ProductsLoadedOnScroll
-                  nodes={nodes}
-                  inView={inView}
-                  nextPageUrl={nextPageUrl}
-                  hasNextPage={hasNextPage}
-                  state={state}
-                />
-                <div className="flex items-center justify-center mt-6">
-                  <Button
-                    ref={ref}
-                    as={NextLink}
-                    variant="secondary"
-                    width="full"
-                  >
-                    {isLoading ? 'Loading...' : 'Load more products'}
-                  </Button>
-                </div>
-              </>
-            )}
-          </Pagination>
-        </SortFilter>
-      </Section>
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/50 to-transparent" />
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-4">
+            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+            <span>/</span>
+            <Link to="/collections" className="hover:text-white transition-colors">Collections</Link>
+            <span>/</span>
+            <span className="text-white">{collection.title}</span>
+          </nav>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl">{collection.title}</h1>
+          {collection.description && (
+            <p className="mt-4 text-neutral-400 max-w-xl">{collection.description}</p>
+          )}
+        </div>
+      </div>
+
+      {/* Products Section */}
+      <section className="py-12 px-6">
+        <div className="max-w-7xl mx-auto">
+          <SortFilter
+            filters={collection.products.filters as Filter[]}
+            appliedFilters={appliedFilters}
+            collections={collections}
+          >
+            <Pagination connection={collection.products}>
+              {({
+                nodes,
+                isLoading,
+                PreviousLink,
+                NextLink,
+                nextPageUrl,
+                hasNextPage,
+                state,
+              }) => (
+                <>
+                  {/* Previous button */}
+                  <div className="flex items-center justify-center mb-8">
+                    <PreviousLink className="px-8 py-3 border border-neutral-700 text-sm tracking-[0.2em] uppercase text-neutral-400 hover:text-white hover:border-white transition-colors">
+                      {isLoading ? 'Loading...' : '← Load Previous'}
+                    </PreviousLink>
+                  </div>
+
+                  {/* Product Grid */}
+                  <ProductsLoadedOnScroll
+                    nodes={nodes}
+                    inView={inView}
+                    nextPageUrl={nextPageUrl}
+                    hasNextPage={hasNextPage}
+                    state={state}
+                  />
+
+                  {/* Next button */}
+                  <div className="flex items-center justify-center mt-12">
+                    <NextLink
+                      ref={ref}
+                      className="px-8 py-3 border border-neutral-700 text-sm tracking-[0.2em] uppercase text-neutral-400 hover:text-white hover:border-white transition-colors"
+                    >
+                      {isLoading ? 'Loading...' : 'Load More Products →'}
+                    </NextLink>
+                  </div>
+                </>
+              )}
+            </Pagination>
+          </SortFilter>
+        </div>
+      </section>
+
       <Analytics.CollectionView
         data={{
           collection: {
@@ -212,7 +223,7 @@ export default function Collection() {
           },
         }}
       />
-    </>
+    </div>
   );
 }
 
@@ -242,15 +253,59 @@ function ProductsLoadedOnScroll({
   }, [inView, navigate, state, nextPageUrl, hasNextPage]);
 
   return (
-    <Grid layout="products" data-test="product-grid">
-      {nodes.map((product: any, i: number) => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          loading={getImageLoadingPriority(i)}
-        />
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-neutral-800" data-test="product-grid">
+      {nodes.map((product: any) => (
+        <CollectionProductCard key={product.id} product={product} />
       ))}
-    </Grid>
+    </div>
+  );
+}
+
+function CollectionProductCard({product}: {product: any}) {
+  const firstVariant = product.variants?.nodes?.[0];
+  const image = product.featuredImage;
+
+  return (
+    <Link
+      to={`/products/${product.handle}`}
+      className="group bg-[#0a0a0a] block"
+    >
+      <div className="aspect-[3/4] overflow-hidden relative">
+        {image && (
+          <Image
+            data={image}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        {/* Quick view */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+          <span className="block w-full py-3 bg-white text-black text-xs tracking-[0.2em] uppercase text-center hover:bg-brand-400 transition-colors">
+            Quick View
+          </span>
+        </div>
+      </div>
+
+      <div className="p-4 space-y-2">
+        <h3 className="text-sm font-medium truncate">{product.title}</h3>
+        <div className="flex items-center gap-2">
+          {firstVariant?.price && (
+            <Money
+              data={firstVariant.price}
+              className="text-sm text-neutral-400"
+            />
+          )}
+          {firstVariant?.compareAtPrice && (
+            <Money
+              data={firstVariant.compareAtPrice}
+              className="text-xs text-neutral-600 line-through"
+            />
+          )}
+        </div>
+      </div>
+    </Link>
   );
 }
 
