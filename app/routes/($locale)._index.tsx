@@ -97,17 +97,15 @@ export default function Homepage() {
 
         <div className="relative z-20 text-center px-6 max-w-5xl mx-auto pt-32 lg:pt-40">
           <p className="text-xs tracking-[0.5em] uppercase text-yellow-300/90 mb-8 font-medium animate-fade-up" style={{animationDelay: '0.1s'}}>
-            Collection 2026
+            AHHHHHHHHHHHHH
           </p>
           <h1 className="font-title text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] mb-8 text-white animate-fade-up" style={{animationDelay: '0.2s'}}>
-            <span className="block">Wear the</span>
-            <span className="block text-yellow-300">
-              Future
-            </span>
+            <span className="text-white">FELIZ</span>{' '}
+            <span className="text-yellow-300">NAVIDAD</span>
           </h1>
           <p className="text-lg md:text-xl text-white/90 max-w-xl mx-auto mb-12 font-light leading-relaxed animate-fade-up" style={{animationDelay: '0.3s'}}>
-            Experimental silhouettes. Sustainable materials. 
-            Designed for those who move differently.
+            Blah blah blah blah blah
+            blah blah Swag Swag Feliz NAVI-SWAG
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{animationDelay: '0.4s'}}>
             <Link
@@ -243,7 +241,7 @@ export default function Homepage() {
             <span key={i} className="text-sm tracking-[0.3em] uppercase font-medium flex items-center gap-16">
               <span>Free Shipping Over $150</span>
               <span className="w-2 h-2 bg-white/40 rounded-full" />
-              <span>Sustainable Materials</span>
+              <span>Super Swag</span>
               <span className="w-2 h-2 bg-white/40 rounded-full" />
               <span>Made to Order</span>
               <span className="w-2 h-2 bg-white/40 rounded-full" />

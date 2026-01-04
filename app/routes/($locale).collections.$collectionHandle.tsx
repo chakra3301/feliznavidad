@@ -138,7 +138,7 @@ export default function Collection() {
   const {ref, inView} = useInView();
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a]">
+    <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <div className="relative h-64 md:h-80 overflow-hidden">
         {collection.image && (
@@ -148,18 +148,18 @@ export default function Collection() {
             sizes="100vw"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-black/50 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/50 to-transparent" />
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
-          <nav className="flex items-center gap-2 text-xs text-neutral-400 mb-4">
-            <Link to="/" className="hover:text-white transition-colors">Home</Link>
+          <nav className="flex items-center gap-2 text-xs text-neutral-500 mb-4">
+            <Link to="/" className="hover:text-neutral-900 transition-colors">Home</Link>
             <span>/</span>
-            <Link to="/collections" className="hover:text-white transition-colors">Collections</Link>
+            <Link to="/collections" className="hover:text-neutral-900 transition-colors">Collections</Link>
             <span>/</span>
-            <span className="text-white">{collection.title}</span>
+            <span className="text-neutral-900">{collection.title}</span>
           </nav>
-          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl">{collection.title}</h1>
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl text-neutral-900">{collection.title}</h1>
           {collection.description && (
-            <p className="mt-4 text-neutral-400 max-w-xl">{collection.description}</p>
+            <p className="mt-4 text-neutral-600 max-w-xl">{collection.description}</p>
           )}
         </div>
       </div>
@@ -185,7 +185,7 @@ export default function Collection() {
                 <>
                   {/* Previous button */}
                   <div className="flex items-center justify-center mb-8">
-                    <PreviousLink className="px-8 py-3 border border-neutral-700 text-sm tracking-[0.2em] uppercase text-neutral-400 hover:text-white hover:border-white transition-colors">
+                    <PreviousLink className="px-8 py-3 border border-neutral-300 text-sm tracking-[0.2em] uppercase text-neutral-600 hover:text-neutral-900 hover:border-neutral-900 transition-colors">
                       {isLoading ? 'Loading...' : '← Load Previous'}
                     </PreviousLink>
                   </div>
@@ -203,7 +203,7 @@ export default function Collection() {
                   <div className="flex items-center justify-center mt-12">
                     <NextLink
                       ref={ref}
-                      className="px-8 py-3 border border-neutral-700 text-sm tracking-[0.2em] uppercase text-neutral-400 hover:text-white hover:border-white transition-colors"
+                      className="px-8 py-3 border border-neutral-300 text-sm tracking-[0.2em] uppercase text-neutral-600 hover:text-neutral-900 hover:border-neutral-900 transition-colors"
                     >
                       {isLoading ? 'Loading...' : 'Load More Products →'}
                     </NextLink>
@@ -253,7 +253,7 @@ function ProductsLoadedOnScroll({
   }, [inView, navigate, state, nextPageUrl, hasNextPage]);
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-neutral-800" data-test="product-grid">
+    <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-px bg-neutral-200" data-test="product-grid">
       {nodes.map((product: any) => (
         <CollectionProductCard key={product.id} product={product} />
       ))}
@@ -268,7 +268,7 @@ function CollectionProductCard({product}: {product: any}) {
   return (
     <Link
       to={`/products/${product.handle}`}
-      className="group bg-[#0a0a0a] block"
+      className="group bg-white block"
     >
       <div className="aspect-[3/4] overflow-hidden relative">
         {image && (
@@ -278,29 +278,29 @@ function CollectionProductCard({product}: {product: any}) {
             sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, 50vw"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         
         {/* Quick view */}
         <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
-          <span className="block w-full py-3 bg-white text-black text-xs tracking-[0.2em] uppercase text-center hover:bg-brand-400 transition-colors">
+          <span className="block w-full py-3 bg-neutral-900 text-white text-xs tracking-[0.2em] uppercase text-center hover:bg-yellow-500 transition-colors">
             Quick View
           </span>
         </div>
       </div>
 
       <div className="p-4 space-y-2">
-        <h3 className="text-sm font-medium truncate">{product.title}</h3>
+        <h3 className="text-sm font-medium truncate text-neutral-900">{product.title}</h3>
         <div className="flex items-center gap-2">
           {firstVariant?.price && (
             <Money
               data={firstVariant.price}
-              className="text-sm text-neutral-400"
+              className="text-sm text-neutral-600"
             />
           )}
           {firstVariant?.compareAtPrice && (
             <Money
               data={firstVariant.compareAtPrice}
-              className="text-xs text-neutral-600 line-through"
+              className="text-xs text-neutral-400 line-through"
             />
           )}
         </div>

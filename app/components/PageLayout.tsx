@@ -1,6 +1,6 @@
 import {useParams, Form, Await, useRouteLoaderData, Link} from '@remix-run/react';
 import {Disclosure} from '@headlessui/react';
-import {Suspense, useEffect, useMemo} from 'react';
+import {Suspense, useEffect, useMemo, useState} from 'react';
 import {CartForm} from '@shopify/hydrogen';
 
 import {type LayoutQuery} from 'storefrontapi.generated';
@@ -51,6 +51,7 @@ export function PageLayout({children, layout}: LayoutProps) {
 
 function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
   const isHome = useIsHomePath();
+  const [isHoveringHeader, setIsHoveringHeader] = useState(false);
 
   const {
     isOpen: isCartOpen,
@@ -80,10 +81,12 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
       <header
         role="banner"
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isHome 
-            ? 'bg-transparent hover:bg-white/90 hover:backdrop-blur-xl' 
+          isHome
+            ? 'bg-transparent hover:bg-white/90 hover:backdrop-blur-xl'
             : 'bg-white/90 backdrop-blur-xl border-b border-neutral-200/50'
         }`}
+        onMouseEnter={() => setIsHoveringHeader(true)}
+        onMouseLeave={() => setIsHoveringHeader(false)}
       >
         <div className="max-w-7xl mx-auto px-6 py-4">
           {/* Top row - Cart icon on right */}
@@ -136,7 +139,9 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
               <Link
                 to="/"
                 prefetch="intent"
-                className="font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-colors relative group"
+                className={`font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-all duration-300 relative group ${
+                  !isHoveringHeader ? 'drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]' : ''
+                }`}
               >
                 Home
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-violet-500 group-hover:w-full transition-all duration-300" />
@@ -144,7 +149,9 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
               <Link
                 to="/collections"
                 prefetch="intent"
-                className="font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-colors relative group"
+                className={`font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-all duration-300 relative group ${
+                  !isHoveringHeader ? 'drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]' : ''
+                }`}
               >
                 Collections
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-violet-500 group-hover:w-full transition-all duration-300" />
@@ -152,7 +159,9 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
               <Link
                 to="/pages/universe"
                 prefetch="intent"
-                className="font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-colors relative group"
+                className={`font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-all duration-300 relative group ${
+                  !isHoveringHeader ? 'drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]' : ''
+                }`}
               >
                 Universe
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-violet-500 group-hover:w-full transition-all duration-300" />
@@ -328,7 +337,7 @@ function Footer({menu, shopName}: {menu?: EnhancedMenu; shopName?: string}) {
           {/* Brand column */}
           <div className="lg:col-span-1">
             <Link to="/" className="font-display text-2xl tracking-wide text-neutral-900">
-              {shopName}
+              Feliz Navidad Store
             </Link>
             <p className="mt-4 text-sm text-neutral-500 leading-relaxed">
               Experimental silhouettes for those who move differently. 
@@ -354,34 +363,45 @@ function Footer({menu, shopName}: {menu?: EnhancedMenu; shopName?: string}) {
           </div>
 
           {/* Menu columns */}
-          {(menu?.items || []).slice(0, 3).map((item) => (
-            <div key={item.id}>
-              <h3 className="text-sm tracking-[0.2em] uppercase text-neutral-900 mb-4">
-                {item.title}
-              </h3>
-              {item.items && item.items.length > 0 && (
-                <ul className="space-y-3">
-                  {item.items.map((subItem: ChildEnhancedMenuItem) => (
-                    <li key={subItem.id}>
-                      <Link
-                        to={subItem.to}
-                        target={subItem.target}
-                        className="text-sm text-neutral-500 hover:text-violet-600 transition-colors"
-                      >
-                        {subItem.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))}
+          {(menu?.items || [])
+            .filter((item) => {
+              const title = item.title?.toLowerCase() || '';
+              return !title.includes('search') && !title.includes('privacy') && !title.includes('your choice');
+            })
+            .slice(0, 3)
+            .map((item) => (
+              <div key={item.id}>
+                <h3 className="text-sm tracking-[0.2em] uppercase text-neutral-900 mb-4">
+                  {item.title}
+                </h3>
+                {item.items && item.items.length > 0 && (
+                  <ul className="space-y-3">
+                    {item.items
+                      .filter((subItem: ChildEnhancedMenuItem) => {
+                        const title = subItem.title?.toLowerCase() || '';
+                        return !title.includes('search') && !title.includes('privacy') && !title.includes('your choice');
+                      })
+                      .map((subItem: ChildEnhancedMenuItem) => (
+                        <li key={subItem.id}>
+                          <Link
+                            to={subItem.to}
+                            target={subItem.target}
+                            className="text-sm text-neutral-500 hover:text-violet-600 transition-colors"
+                          >
+                            {subItem.title}
+                          </Link>
+                        </li>
+                      ))}
+                  </ul>
+                )}
+              </div>
+            ))}
         </div>
 
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-neutral-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-neutral-400">
-            © {new Date().getFullYear()} {shopName}. All rights reserved.
+            © {new Date().getFullYear()} Feliz Navidad Store. All rights reserved.
           </p>
           <div className="flex gap-6">
             <Link to="/policies/privacy-policy" className="text-xs text-neutral-400 hover:text-violet-600 transition-colors">
