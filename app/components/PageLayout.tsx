@@ -7,6 +7,7 @@ import {type LayoutQuery} from 'storefrontapi.generated';
 import {Cart} from '~/components/Cart';
 import {CartLoading} from '~/components/CartLoading';
 import {Drawer, useDrawer} from '~/components/Drawer';
+import {SheckleMan} from '~/components/SheckleMan';
 import {
   type EnhancedMenu,
   type ChildEnhancedMenuItem,
@@ -40,6 +41,8 @@ export function PageLayout({children, layout}: LayoutProps) {
         </main>
         {footerMenu && <Footer menu={footerMenu} shopName={layout?.shop.name} />}
       </div>
+      {/* Easter egg character */}
+      <SheckleMan />
     </>
   );
 }
