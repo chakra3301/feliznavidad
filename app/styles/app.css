@@ -79,6 +79,16 @@
   color: #0a0a0a;
 }
 
+/* Custom cursor */
+*, *::before, *::after {
+  cursor: url('/cursor.png'), auto;
+}
+
+a, button, [role="button"], input[type="submit"], input[type="button"],
+label, select, .cursor-pointer {
+  cursor: url('/cursor.png'), pointer;
+}
+
 @layer base {
   * {
     font-variant-ligatures: none;
