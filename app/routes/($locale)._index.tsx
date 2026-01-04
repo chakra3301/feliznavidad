@@ -78,21 +78,21 @@ export default function Homepage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-neutral-50 to-white">
-        {/* Background layers - soft gradients for light theme */}
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-100/60 via-transparent to-rose-100/50" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(139,92,246,0.12),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(244,63,94,0.08),transparent_50%)]" />
+      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-white to-yellow-50">
+        {/* Background layers - white and yellow gradients */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-transparent to-yellow-100/60" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.4),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(254,240,138,0.3),transparent_50%)]" />
         
         {/* Grid pattern */}
         <div className="absolute inset-0 bg-grid opacity-60" />
 
         {/* Floating orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-400/20 rounded-full blur-[120px] animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-rose-400/20 rounded-full blur-[120px] animate-float" style={{animationDelay: '-3s'}} />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white/30 rounded-full blur-[120px] animate-float" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-yellow-300/30 rounded-full blur-[120px] animate-float" style={{animationDelay: '-3s'}} />
 
         <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-32 lg:pt-40">
-          <p className="text-xs tracking-[0.5em] uppercase text-violet-600/80 mb-8 font-medium animate-fade-up" style={{animationDelay: '0.1s'}}>
+          <p className="text-xs tracking-[0.5em] uppercase text-yellow-600/80 mb-8 font-medium animate-fade-up" style={{animationDelay: '0.1s'}}>
             Collection 2026
           </p>
           <h1 className="font-title text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] mb-8 text-neutral-900 animate-fade-up" style={{animationDelay: '0.2s'}}>
@@ -108,7 +108,7 @@ export default function Homepage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{animationDelay: '0.4s'}}>
             <Link
               to="/collections/all"
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-neutral-900 text-white text-sm tracking-[0.2em] uppercase font-medium hover:bg-violet-600 transition-all duration-500"
+              className="group inline-flex items-center gap-3 px-8 py-4 bg-neutral-900 text-white text-sm tracking-[0.2em] uppercase font-medium hover:bg-yellow-500 transition-all duration-500"
             >
               <span>Shop Collection</span>
               <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -117,7 +117,7 @@ export default function Homepage() {
             </Link>
             <Link
               to="/collections"
-              className="inline-flex items-center gap-3 px-8 py-4 border border-neutral-300 text-neutral-900 text-sm tracking-[0.2em] uppercase font-medium hover:border-violet-600 hover:text-violet-600 transition-all duration-500"
+              className="inline-flex items-center gap-3 px-8 py-4 border border-neutral-300 text-neutral-900 text-sm tracking-[0.2em] uppercase font-medium hover:border-yellow-500 hover:text-yellow-600 transition-all duration-500"
             >
               <span>View All</span>
             </Link>
@@ -142,7 +142,7 @@ export default function Homepage() {
                   <div className="max-w-7xl mx-auto">
                     <div className="flex items-end justify-between mb-16">
                       <div>
-                        <span className="text-xs tracking-[0.4em] uppercase text-violet-600/80 block mb-3">Featured</span>
+                        <span className="text-xs tracking-[0.4em] uppercase text-yellow-600/80 block mb-3">Featured</span>
                         <h2 className="font-display text-4xl md:text-5xl text-neutral-900">New Arrivals</h2>
                       </div>
                     </div>
@@ -163,7 +163,7 @@ export default function Homepage() {
                     </div>
                     <Link 
                       to="/collections/all" 
-                      className="hidden md:flex items-center gap-2 text-sm tracking-wider uppercase text-neutral-500 hover:text-violet-600 transition-colors group"
+                      className="hidden md:flex items-center gap-2 text-sm tracking-wider uppercase text-neutral-500 hover:text-yellow-600 transition-colors group"
                     >
                       <span>View All</span>
                       <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -233,7 +233,7 @@ export default function Homepage() {
       )}
 
       {/* Marquee Banner */}
-      <div className="py-5 bg-gradient-to-r from-violet-600 to-rose-500 overflow-hidden text-white">
+      <div className="py-5 bg-gradient-to-r from-yellow-400 to-yellow-500 overflow-hidden text-neutral-900">
         <div className="animate-marquee flex gap-16 whitespace-nowrap">
           {[...Array(8)].map((_, i) => (
             <span key={i} className="text-sm tracking-[0.3em] uppercase font-medium flex items-center gap-16">

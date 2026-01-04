@@ -176,7 +176,7 @@ label, select, .cursor-pointer {
 
   /* Text gradients */
   .text-gradient {
-    @apply text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-rose-500;
+    @apply text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-600;
   }
 
   /* Glass effect */
