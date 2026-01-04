@@ -137,7 +137,7 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
               <img 
                 src="/feliz_.png" 
                 alt={title} 
-                className="h-14 md:h-20 lg:h-24 w-auto"
+                className="h-7 md:h-10 lg:h-12 w-auto"
               />
             </Link>
 
