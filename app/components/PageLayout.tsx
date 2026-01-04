@@ -127,17 +127,27 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
             </div>
           </div>
 
-          {/* Centered Logo */}
+          {/* Centered Logo with characters */}
           <div className="flex flex-col items-center">
             <Link
               to="/"
-              className="flex items-center justify-center"
+              className="flex items-center justify-center gap-2"
               prefetch="intent"
             >
+              <img 
+                src="/left.png" 
+                alt="" 
+                className="h-8 md:h-12 lg:h-14 w-auto"
+              />
               <img 
                 src="/feliz_.png" 
                 alt={title} 
                 className="h-7 md:h-10 lg:h-12 w-auto"
+              />
+              <img 
+                src="/right.png" 
+                alt="" 
+                className="h-8 md:h-12 lg:h-14 w-auto"
               />
             </Link>
 
