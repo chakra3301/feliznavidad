@@ -87,6 +87,7 @@ export default {
         float: 'float 6s ease-in-out infinite',
         pulse: 'pulse 2s ease-in-out infinite',
         shimmer: 'shimmer 2s linear infinite',
+        shake: 'shake 0.1s ease-in-out infinite',
       },
       keyframes: {
         marquee: {
@@ -112,6 +113,10 @@ export default {
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
+        },
+        shake: {
+          '0%, 100%': { transform: 'translateX(-40%) rotate(-5deg)' },
+          '50%': { transform: 'translateX(-40%) rotate(5deg)' },
         },
       },
       backgroundImage: {
