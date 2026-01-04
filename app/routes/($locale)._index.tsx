@@ -78,30 +78,34 @@ export default function Homepage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-white to-yellow-50">
-        {/* Background layers - white and yellow gradients */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/80 via-transparent to-yellow-100/60" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.4),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(254,240,138,0.3),transparent_50%)]" />
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        {/* Moon Image Background */}
+        <img
+          src="/moon.jpg"
+          alt="Moon"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
         
-        {/* Grid pattern */}
-        <div className="absolute inset-0 bg-grid opacity-60" />
+        {/* Top fade gradient - seamless white fade */}
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none" />
+        
+        {/* Bottom fade gradient - seamless white fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
+        
+        {/* Subtle overlay for text readability */}
+        <div className="absolute inset-0 bg-black/20 z-0" />
 
-        {/* Floating orbs */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white/30 rounded-full blur-[120px] animate-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-yellow-300/30 rounded-full blur-[120px] animate-float" style={{animationDelay: '-3s'}} />
-
-        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-32 lg:pt-40">
-          <p className="text-xs tracking-[0.5em] uppercase text-yellow-600/80 mb-8 font-medium animate-fade-up" style={{animationDelay: '0.1s'}}>
+        <div className="relative z-20 text-center px-6 max-w-5xl mx-auto pt-32 lg:pt-40">
+          <p className="text-xs tracking-[0.5em] uppercase text-yellow-300/90 mb-8 font-medium animate-fade-up" style={{animationDelay: '0.1s'}}>
             Collection 2026
           </p>
-          <h1 className="font-title text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] mb-8 text-neutral-900 animate-fade-up" style={{animationDelay: '0.2s'}}>
+          <h1 className="font-title text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] mb-8 text-white animate-fade-up" style={{animationDelay: '0.2s'}}>
             <span className="block">Wear the</span>
-            <span className="block text-gradient">
+            <span className="block text-yellow-300">
               Future
             </span>
           </h1>
-          <p className="text-lg md:text-xl text-neutral-500 max-w-xl mx-auto mb-12 font-light leading-relaxed animate-fade-up" style={{animationDelay: '0.3s'}}>
+          <p className="text-lg md:text-xl text-white/90 max-w-xl mx-auto mb-12 font-light leading-relaxed animate-fade-up" style={{animationDelay: '0.3s'}}>
             Experimental silhouettes. Sustainable materials. 
             Designed for those who move differently.
           </p>
@@ -117,7 +121,7 @@ export default function Homepage() {
             </Link>
             <Link
               to="/collections"
-              className="inline-flex items-center gap-3 px-8 py-4 border border-neutral-300 text-neutral-900 text-sm tracking-[0.2em] uppercase font-medium hover:border-yellow-500 hover:text-yellow-600 transition-all duration-500"
+              className="inline-flex items-center gap-3 px-8 py-4 border border-white/50 text-white text-sm tracking-[0.2em] uppercase font-medium hover:border-yellow-300 hover:text-yellow-300 transition-all duration-500"
             >
               <span>View All</span>
             </Link>
@@ -125,9 +129,9 @@ export default function Homepage() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
-          <span className="text-[10px] tracking-[0.4em] uppercase text-neutral-400">Scroll</span>
-          <div className="w-px h-16 bg-gradient-to-b from-neutral-400 to-transparent" />
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-20">
+          <span className="text-[10px] tracking-[0.4em] uppercase text-white/70">Scroll</span>
+          <div className="w-px h-16 bg-gradient-to-b from-white/70 to-transparent" />
         </div>
       </section>
 
