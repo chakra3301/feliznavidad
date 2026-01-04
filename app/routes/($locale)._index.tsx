@@ -248,18 +248,18 @@ export default function Homepage() {
         </div>
       </div>
 
-      {/* KFC Image Section */}
+      {/* Moon Image Section */}
       <section className="relative w-full overflow-hidden">
-        {/* Top fade gradient */}
+        {/* Top fade gradient - seamless white fade */}
         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none" />
         
-        {/* Bottom fade gradient */}
+        {/* Bottom fade gradient - seamless white fade */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
         
         {/* Image */}
         <img
-          src="/kfc.jpg"
-          alt="KFC"
+          src="/moon.jpg"
+          alt="Moon"
           className="w-full h-auto object-cover"
         />
       </section>
