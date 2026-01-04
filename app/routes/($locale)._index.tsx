@@ -248,26 +248,20 @@ export default function Homepage() {
         </div>
       </div>
 
-      {/* About Section */}
-      <section className="py-32 px-6 relative overflow-hidden bg-gradient-to-b from-white to-neutral-50">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(139,92,246,0.06),transparent_70%)]" />
+      {/* KFC Image Section */}
+      <section className="relative w-full overflow-hidden">
+        {/* Top fade gradient */}
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-white to-transparent z-10 pointer-events-none" />
         
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <span className="text-xs tracking-[0.4em] uppercase text-violet-600/80 block mb-6">Our Philosophy</span>
-          <h2 className="font-display text-3xl md:text-5xl leading-tight mb-8 text-neutral-900">
-            We believe clothing should be an extension of your identity, not a uniform.
-          </h2>
-          <p className="text-lg text-neutral-500 max-w-2xl mx-auto mb-12 leading-relaxed">
-            Each piece is crafted with intention, using only sustainable materials and ethical production methods. 
-            Because looking good should never come at the cost of our planet.
-          </p>
-          <Link
-            to="/pages/about"
-            className="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-neutral-600 hover:text-violet-600 transition-colors border-b border-neutral-300 pb-1 hover:border-violet-600"
-          >
-            Learn More About Us
-          </Link>
-        </div>
+        {/* Bottom fade gradient */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-white to-transparent z-10 pointer-events-none" />
+        
+        {/* Image */}
+        <img
+          src="/kfc.jpg"
+          alt="KFC"
+          className="w-full h-auto object-cover"
+        />
       </section>
     </div>
   );
