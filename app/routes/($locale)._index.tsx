@@ -49,8 +49,8 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
       variables: {country, language},
     })
     .catch((error) => {
-      console.error(error);
-      return null;
+      console.error('Error loading featured products:', error);
+      return {products: {nodes: []}};
     });
 
   const featuredCollections = context.storefront
@@ -58,8 +58,8 @@ function loadDeferredData({context}: LoaderFunctionArgs) {
       variables: {country, language},
     })
     .catch((error) => {
-      console.error(error);
-      return null;
+      console.error('Error loading featured collections:', error);
+      return {collections: {nodes: []}};
     });
 
   return {
@@ -132,11 +132,11 @@ export default function Homepage() {
       </section>
 
       {/* Featured Products */}
-      {featuredProducts && (
-        <Suspense fallback={<ProductGridSkeleton />}>
-          <Await resolve={featuredProducts}>
-            {(response) => {
-              if (!response?.products?.nodes?.length) return null;
+      <Suspense fallback={<ProductGridSkeleton />}>
+        <Await resolve={featuredProducts}>
+          {(response) => {
+            const products = response?.products?.nodes || [];
+            if (!products.length) {
               return (
                 <section className="py-24 px-6 bg-white">
                   <div className="max-w-7xl mx-auto">
@@ -145,38 +145,53 @@ export default function Homepage() {
                         <span className="text-xs tracking-[0.4em] uppercase text-violet-600/80 block mb-3">Featured</span>
                         <h2 className="font-display text-4xl md:text-5xl text-neutral-900">New Arrivals</h2>
                       </div>
-                      <Link 
-                        to="/collections/all" 
-                        className="hidden md:flex items-center gap-2 text-sm tracking-wider uppercase text-neutral-500 hover:text-violet-600 transition-colors group"
-                      >
-                        <span>View All</span>
-                        <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </Link>
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-neutral-200">
-                      {response.products.nodes.slice(0, 6).map((product: any, index: number) => (
-                        <ProductCard key={product.id} product={product} index={index} />
-                      ))}
-                    </div>
-
-                    <div className="mt-8 flex justify-center md:hidden">
-                      <Link 
-                        to="/collections/all" 
-                        className="btn-secondary"
-                      >
-                        View All Products
-                      </Link>
+                    <div className="text-center py-12">
+                      <p className="text-neutral-500">No products available at the moment.</p>
                     </div>
                   </div>
                 </section>
               );
-            }}
-          </Await>
-        </Suspense>
-      )}
+            }
+            return (
+              <section className="py-24 px-6 bg-white">
+                <div className="max-w-7xl mx-auto">
+                  <div className="flex items-end justify-between mb-16">
+                    <div>
+                      <span className="text-xs tracking-[0.4em] uppercase text-violet-600/80 block mb-3">Featured</span>
+                      <h2 className="font-display text-4xl md:text-5xl text-neutral-900">New Arrivals</h2>
+                    </div>
+                    <Link 
+                      to="/collections/all" 
+                      className="hidden md:flex items-center gap-2 text-sm tracking-wider uppercase text-neutral-500 hover:text-violet-600 transition-colors group"
+                    >
+                      <span>View All</span>
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </Link>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-neutral-200">
+                    {products.slice(0, 6).map((product: any, index: number) => (
+                      <ProductCard key={product.id} product={product} index={index} />
+                    ))}
+                  </div>
+
+                  <div className="mt-8 flex justify-center md:hidden">
+                    <Link 
+                      to="/collections/all" 
+                      className="btn-secondary"
+                    >
+                      View All Products
+                    </Link>
+                  </div>
+                </div>
+              </section>
+            );
+          }}
+        </Await>
+      </Suspense>
 
       {/* Collections Strip */}
       {featuredCollections && (
@@ -260,7 +275,7 @@ export default function Homepage() {
 
 function ProductCard({product, index}: {product: any; index: number}) {
   const firstVariant = product.variants?.nodes?.[0];
-  const image = product.featuredImage;
+  const image = product.featuredImage || firstVariant?.image;
 
   return (
     <Link
@@ -268,12 +283,16 @@ function ProductCard({product, index}: {product: any; index: number}) {
       className="group relative bg-white overflow-hidden block"
     >
       <div className="aspect-[3/4] relative overflow-hidden bg-neutral-100">
-        {image && (
+        {image ? (
           <Image
             data={image}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
             sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
           />
+        ) : (
+          <div className="w-full h-full bg-neutral-200 flex items-center justify-center">
+            <span className="text-neutral-400 text-sm">No Image</span>
+          </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-white/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         

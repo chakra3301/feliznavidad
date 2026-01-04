@@ -44,6 +44,13 @@ export const PRODUCT_CARD_FRAGMENT = `#graphql
     publishedAt
     handle
     vendor
+    featuredImage {
+      id
+      url
+      altText
+      width
+      height
+    }
     variants(first: 1) {
       nodes {
         id
