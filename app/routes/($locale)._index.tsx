@@ -91,13 +91,13 @@ export default function Homepage() {
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-400/20 rounded-full blur-[120px] animate-float" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-rose-400/20 rounded-full blur-[120px] animate-float" style={{animationDelay: '-3s'}} />
 
-        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pt-32 lg:pt-40">
           <p className="text-xs tracking-[0.5em] uppercase text-violet-600/80 mb-8 font-medium animate-fade-up" style={{animationDelay: '0.1s'}}>
             Collection 2026
           </p>
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] mb-8 text-neutral-900 animate-fade-up" style={{animationDelay: '0.2s'}}>
+          <h1 className="font-title text-5xl md:text-7xl lg:text-8xl font-normal leading-[0.95] mb-8 text-neutral-900 animate-fade-up" style={{animationDelay: '0.2s'}}>
             <span className="block">Wear the</span>
-            <span className="block italic text-gradient">
+            <span className="block text-gradient">
               Future
             </span>
           </h1>
@@ -143,7 +143,7 @@ export default function Homepage() {
                     <div className="flex items-end justify-between mb-16">
                       <div>
                         <span className="text-xs tracking-[0.4em] uppercase text-violet-600/80 block mb-3">Featured</span>
-                        <h2 className="font-serif text-4xl md:text-5xl text-neutral-900">New Arrivals</h2>
+                        <h2 className="font-display text-4xl md:text-5xl text-neutral-900">New Arrivals</h2>
                       </div>
                       <Link 
                         to="/collections/all" 
@@ -239,7 +239,7 @@ export default function Homepage() {
         
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <span className="text-xs tracking-[0.4em] uppercase text-violet-600/80 block mb-6">Our Philosophy</span>
-          <h2 className="font-serif text-3xl md:text-5xl leading-tight mb-8 text-neutral-900">
+          <h2 className="font-display text-3xl md:text-5xl leading-tight mb-8 text-neutral-900">
             We believe clothing should be an extension of your identity, not a uniform.
           </h2>
           <p className="text-lg text-neutral-500 max-w-2xl mx-auto mb-12 leading-relaxed">

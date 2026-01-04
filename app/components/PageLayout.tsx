@@ -80,77 +80,94 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
             : 'bg-white/90 backdrop-blur-xl border-b border-neutral-200/50'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          {/* Mobile menu button */}
-          <button
-            onClick={openMenu}
-            className="lg:hidden relative flex items-center justify-center w-10 h-10 -ml-2"
-            aria-label="Open menu"
-          >
-            <div className="flex flex-col gap-1.5">
-              <span className="w-5 h-0.5 bg-neutral-900" />
-              <span className="w-5 h-0.5 bg-neutral-900" />
-            </div>
-          </button>
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          {/* Top row - Cart icon on right */}
+          <div className="flex items-center justify-end mb-2 lg:mb-0 lg:absolute lg:right-6 lg:top-4 lg:z-10">
+            {/* Mobile menu button - hidden on desktop */}
+            <button
+              onClick={openMenu}
+              className="relative flex items-center justify-center w-10 h-10 mr-auto"
+              style={{display: 'none'}}
+              aria-label="Open menu"
+            >
+              <div className="flex flex-col gap-1.5">
+                <span className="w-5 h-0.5 bg-neutral-900" />
+                <span className="w-5 h-0.5 bg-neutral-900" />
+              </div>
+            </button>
 
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center"
-            prefetch="intent"
-          >
-            <img 
-              src="/feliz_.png" 
-              alt={title} 
-              className="h-10 md:h-12 w-auto"
-            />
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            {(menu?.items || []).map((item) => (
-              <Link
-                key={item.id}
-                to={item.to}
-                target={item.target}
-                prefetch="intent"
-                className="text-sm tracking-wider uppercase text-neutral-600 hover:text-violet-600 transition-colors relative group"
+            <div className="flex items-center gap-2">
+              {/* Search */}
+              <Form
+                method="get"
+                action="/search"
+                className="hidden md:flex items-center"
               >
-                {item.title}
+                <button
+                  type="submit"
+                  className="relative flex items-center justify-center w-10 h-10 text-neutral-500 hover:text-violet-600 transition-colors"
+                  aria-label="Search"
+                >
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                  </svg>
+                </button>
+              </Form>
+
+              {/* Account */}
+              <AccountLink />
+
+              {/* Cart */}
+              <CartCount openCart={openCart} />
+            </div>
+          </div>
+
+          {/* Centered Logo */}
+          <div className="flex flex-col items-center">
+            <Link
+              to="/"
+              className="flex items-center justify-center"
+              prefetch="intent"
+            >
+              <img 
+                src="/feliz_.png" 
+                alt={title} 
+                className="h-14 md:h-20 lg:h-24 w-auto"
+              />
+            </Link>
+
+            {/* Navigation below logo */}
+            <nav className="flex items-center gap-10 mt-4">
+              <Link
+                to="/"
+                prefetch="intent"
+                className="font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-colors relative group"
+              >
+                Home
                 <span className="absolute -bottom-1 left-0 w-0 h-px bg-violet-500 group-hover:w-full transition-all duration-300" />
               </Link>
-            ))}
-          </nav>
-
-          {/* Right side actions */}
-          <div className="flex items-center gap-2">
-            {/* Search */}
-            <Form
-              method="get"
-              action="/search"
-              className="hidden md:flex items-center"
-            >
-              <button
-                type="submit"
-                className="relative flex items-center justify-center w-10 h-10 text-neutral-500 hover:text-violet-600 transition-colors"
-                aria-label="Search"
+              <Link
+                to="/collections"
+                prefetch="intent"
+                className="font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-colors relative group"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-              </button>
-            </Form>
-
-            {/* Account */}
-            <AccountLink />
-
-            {/* Cart */}
-            <CartCount openCart={openCart} />
+                Collections
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-violet-500 group-hover:w-full transition-all duration-300" />
+              </Link>
+              <Link
+                to="/pages/universe"
+                prefetch="intent"
+                className="font-display text-lg tracking-[0.15em] uppercase text-neutral-800 hover:text-violet-600 transition-colors relative group"
+              >
+                Universe
+                <span className="absolute -bottom-1 left-0 w-0 h-px bg-violet-500 group-hover:w-full transition-all duration-300" />
+              </Link>
+            </nav>
           </div>
         </div>
       </header>
       {/* Spacer for fixed header */}
-      {!isHome && <div className="h-20" />}
+      {!isHome && <div className="h-36 lg:h-44" />}
     </>
   );
 }
@@ -197,15 +214,20 @@ function MenuMobileNav({
   menu: EnhancedMenu;
   onClose: () => void;
 }) {
+  const navItems = [
+    { id: 'home', title: 'Home', to: '/' },
+    { id: 'collections', title: 'Collections', to: '/collections' },
+    { id: 'universe', title: 'Universe', to: '/pages/universe' },
+  ];
+
   return (
     <nav className="grid gap-6 p-6">
-      {(menu?.items || []).map((item, index) => (
+      {navItems.map((item, index) => (
         <Link
           key={item.id}
           to={item.to}
-          target={item.target}
           onClick={onClose}
-          className="text-2xl font-serif tracking-wide text-neutral-900 hover:text-violet-600 transition-colors"
+          className="text-2xl font-display tracking-[0.1em] uppercase text-neutral-900 hover:text-violet-600 transition-colors"
           style={{animationDelay: `${index * 50}ms`}}
         >
           {item.title}
@@ -326,7 +348,7 @@ function Footer({menu, shopName}: {menu?: EnhancedMenu; shopName?: string}) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand column */}
           <div className="lg:col-span-1">
-            <Link to="/" className="font-serif text-2xl tracking-wide text-neutral-900">
+            <Link to="/" className="font-display text-2xl tracking-wide text-neutral-900">
               {shopName}
             </Link>
             <p className="mt-4 text-sm text-neutral-500 leading-relaxed">

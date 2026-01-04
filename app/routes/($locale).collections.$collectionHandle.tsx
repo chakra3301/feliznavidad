@@ -157,7 +157,7 @@ export default function Collection() {
             <span>/</span>
             <span className="text-white">{collection.title}</span>
           </nav>
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl">{collection.title}</h1>
+          <h1 className="font-display text-4xl md:text-5xl lg:text-6xl">{collection.title}</h1>
           {collection.description && (
             <p className="mt-4 text-neutral-400 max-w-xl">{collection.description}</p>
           )}

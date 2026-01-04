@@ -29,6 +29,7 @@ export default async function handleRequest(
       'https://cdn.shopify.com',
       'https://api.fontshare.com',
       'data:',
+      ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:*'] : []),
     ],
     connectSrc: [
       'self',
