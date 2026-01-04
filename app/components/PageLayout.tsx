@@ -111,13 +111,13 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
           <div className="flex flex-col items-center">
             <Link
               to="/"
-              className="flex items-center justify-center gap-6 md:gap-8 lg:gap-10"
+              className="flex items-center justify-center gap-8 md:gap-12 lg:gap-16"
               prefetch="intent"
             >
               <img 
                 src="/left.png" 
                 alt="" 
-                className="h-14 md:h-20 lg:h-24 w-auto"
+                className="h-20 md:h-28 lg:h-36 w-auto"
               />
               <img 
                 src="/feliz_.png" 
@@ -127,7 +127,7 @@ function Header({title, menu}: {title: string; menu?: EnhancedMenu}) {
               <img 
                 src="/right.png" 
                 alt="" 
-                className="h-14 md:h-20 lg:h-24 w-auto"
+                className="h-20 md:h-28 lg:h-36 w-auto"
               />
             </Link>
 
