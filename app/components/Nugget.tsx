@@ -44,16 +44,16 @@ export function Nugget() {
 
   return (
     <div
-      className="fixed left-0 top-1/2 -translate-y-1/2 z-[9998] cursor-pointer"
+      className="fixed right-0 top-1/2 -translate-y-1/2 z-[9998] cursor-pointer"
       onClick={handleClick}
       style={{pointerEvents: 'auto'}}
     >
       <div
         className={`transition-transform duration-200 ${
-          isPartying ? 'animate-shake' : 'hover:translate-x-2'
+          isPartying ? 'animate-shake' : 'hover:-translate-x-2'
         }`}
         style={{
-          transform: `translateX(-40%)`,
+          transform: `translateX(40%)`,
         }}
       >
         <img

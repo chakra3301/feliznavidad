@@ -115,8 +115,8 @@ export default {
           '100%': { backgroundPosition: '200% 0' },
         },
         shake: {
-          '0%, 100%': { transform: 'translateX(-40%) rotate(-5deg)' },
-          '50%': { transform: 'translateX(-40%) rotate(5deg)' },
+          '0%, 100%': { transform: 'translateX(40%) rotate(-5deg)' },
+          '50%': { transform: 'translateX(40%) rotate(5deg)' },
         },
       },
       backgroundImage: {
