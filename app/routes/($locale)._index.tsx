@@ -79,10 +79,13 @@ export default function Homepage() {
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* Moon Image Background */}
-        <img
-          src="/moon.jpg"
-          alt="Moon"
+        {/* Video Background */}
+        <video
+          src="https://pub-940f6c19bb754ae698ae8f30215bb514.r2.dev/0103.mp4"
+          autoPlay={true}
+          loop={true}
+          muted={true}
+          playsInline={true}
           className="absolute inset-0 w-full h-full object-cover"
         />
         
