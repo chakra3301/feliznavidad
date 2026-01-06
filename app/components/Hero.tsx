@@ -6,14 +6,19 @@ import type {
   Video as MediaVideo,
 } from '@shopify/hydrogen/storefront-api-types';
 
-import type {CollectionContentFragment} from 'storefrontapi.generated';
 import {Heading, Text} from '~/components/Text';
 import {Link} from '~/components/Link';
 
-type HeroProps = CollectionContentFragment & {
+type HeroProps = {
+  byline?: {value?: string};
+  cta?: {value?: string};
+  handle: string;
+  heading?: {value?: string};
   height?: 'full';
   top?: boolean;
   loading?: HTMLImageElement['loading'];
+  spread?: {reference?: Media};
+  spreadSecondary?: {reference?: Media};
 };
 
 /**

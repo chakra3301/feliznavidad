@@ -9,7 +9,6 @@ export default defineConfig({
     hydrogen(),
     oxygen(),
     remix({
-      presets: [hydrogen.preset()],
       future: {
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
@@ -21,7 +20,7 @@ export default defineConfig({
   ],
   ssr: {
     optimizeDeps: {
-      include: ['typographic-base'],
+      include: ['typographic-base', 'react-router'],
     },
   },
   optimizeDeps: {
@@ -33,6 +32,7 @@ export default defineConfig({
       'react-use/esm/useScroll',
       'react-use/esm/useDebounce',
       'react-use/esm/useWindowScroll',
+      'react-router',
     ],
   },
   build: {

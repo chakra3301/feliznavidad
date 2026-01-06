@@ -139,7 +139,7 @@ export default function Product() {
               <div className="aspect-[3/4] bg-neutral-100 overflow-hidden relative group">
                 {media.nodes[selectedImage] && (
                   <Image
-                    data={media.nodes[selectedImage].previewImage || media.nodes[selectedImage]}
+                    data={(media.nodes[selectedImage].previewImage || media.nodes[selectedImage]) as any}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     sizes="(min-width: 1024px) 50vw, 100vw"
                   />

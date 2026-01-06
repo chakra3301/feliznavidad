@@ -1,11 +1,25 @@
 import {Image} from '@shopify/hydrogen';
 
-import type {HomepageFeaturedCollectionsQuery} from 'storefrontapi.generated';
 import {Heading, Section} from '~/components/Text';
 import {Grid} from '~/components/Grid';
 import {Link} from '~/components/Link';
 
-type FeaturedCollectionsProps = HomepageFeaturedCollectionsQuery & {
+type CollectionNode = {
+  id: string;
+  title: string;
+  handle: string;
+  image?: {
+    url: string;
+    width?: number | null;
+    height?: number | null;
+    altText?: string | null;
+  } | null;
+};
+
+type FeaturedCollectionsProps = {
+  collections: {
+    nodes: CollectionNode[];
+  };
   title?: string;
   [key: string]: any;
 };
